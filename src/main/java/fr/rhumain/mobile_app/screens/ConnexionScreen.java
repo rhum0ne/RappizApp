@@ -44,7 +44,7 @@ public class ConnexionScreen extends JPanel implements ActionListener {
         JButton loginBtn = new JButton("Se connecter");
         loginBtn.setActionCommand("connect");
         loginBtn.addActionListener(this);
-        styleButton(loginBtn);
+        app.styleButton(loginBtn);
 
         // --- Assemblage ---
         card.add(title);
@@ -92,19 +92,8 @@ public class ConnexionScreen extends JPanel implements ActionListener {
         return field;
     }
 
-    private void styleButton(JButton btn) {
-        btn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        btn.setBackground(new Color(63, 81, 181)); // Bleu Indigo
-        btn.setForeground(Color.WHITE);
-        btn.setFocusPainted(false);
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btn.setBorder(new EmptyBorder(10, 20, 10, 20));
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
-        this.app.setScreen(new HomeScreen());
+        this.app.setScreen(new HomeScreen(app));
     }
 }
