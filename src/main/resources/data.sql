@@ -16,7 +16,7 @@ CREATE TABLE ingredients(
                             PRIMARY KEY(id)
 );
 
-CREATE TABLE sizes(
+CREATE TABLE formats(
                       id INT NOT NULL AUTO_INCREMENT,
                       name VARCHAR(50) NOT NULL,
                       percentage INT NOT NULL,
@@ -118,7 +118,7 @@ ALTER TABLE orders
 ALTER TABLE orders
     ADD CONSTRAINT fk_sizes_orders
         FOREIGN KEY (id_size)
-            REFERENCES sizes(id)
+            REFERENCES formats(id)
             ON UPDATE CASCADE
             ON DELETE CASCADE;;
 
