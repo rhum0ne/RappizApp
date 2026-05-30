@@ -45,7 +45,7 @@ public class IngredientSeeder implements DataSeeder{
                 stm.setString(1, name);
                 stm.addBatch();
             }
-            stm.executeQuery();
+            stm.executeBatch();
         } catch (SQLException e) {
             throw new DAOException("Impossible to seed ingredients", e);
         }
