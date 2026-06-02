@@ -26,7 +26,8 @@ public class RappizServer {
                         new IngredientSeeder(),
                         new PizzasSeeder(this.ingredientsDAO),
                         new VehiculeSeeder(),
-                        new LivreurSeeder(this.vehiculeDAO)
+                        new LivreurSeeder(this.vehiculeDAO),
+                        new UserSeeder()
                 )
         );
         this.seederRunner.runAll();

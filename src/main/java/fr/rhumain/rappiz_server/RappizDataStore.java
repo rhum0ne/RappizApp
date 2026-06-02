@@ -158,9 +158,9 @@ public class RappizDataStore {
         formats.addAll(List.of(naine, humaine, ogresse));
 
         users.addAll(List.of(
-                new User(1, "Jean", "Dupont", "jean.dupont@rappiz.fr", "rappiz"),
-                new User(2, "Sarah", "Martin", "sarah.martin@rappiz.fr", "rappiz"),
-                new User(3, "Yanis", "Petit", "yanis.petit@rappiz.fr", "rappiz")
+                new User(1, "Jean", "Dupont", "jean.dupont@rappiz.fr", "rappiz", 5000),
+                new User(2, "Sarah", "Martin", "sarah.martin@rappiz.fr", "rappiz", 2750),
+                new User(3, "Yanis", "Petit", "yanis.petit@rappiz.fr", "rappiz", 230)
         ));
         customerBalances.put(1, 55);
         customerBalances.put(2, 18);
