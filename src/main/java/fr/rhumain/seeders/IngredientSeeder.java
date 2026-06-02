@@ -2,6 +2,7 @@ package fr.rhumain.seeders;
 
 import fr.rhumain.dao.ConnectionManager;
 import fr.rhumain.exceptions.DAOException;
+import fr.rhumain.seeders.references.IngredientName;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,11 +11,6 @@ import java.sql.Statement;
 import java.util.List;
 
 public class IngredientSeeder implements DataSeeder{
-    private static final List<String> INGREDIENTS = List.of(
-            "Sauce tomate", "Crème fraiche", "Olive", "Poivron", "Mozzarella", "Jambon", "Champignon",
-            "Ananas", "Oignon", "Thon", "Bacon", "Chorizo", "Poulet", "Steak haché", "Merguez", "Fromage de chèvre",
-            "Roquefort", "Gorgonzola", "Parmesan"
-    );
 
     @Override
     public String getName() {
@@ -41,8 +37,8 @@ public class IngredientSeeder implements DataSeeder{
     public void seed() throws DAOException {
         String sql = "INSERT INTO ingredients (name) VALUES (?)";
         try(PreparedStatement stm = ConnectionManager.getConnection().prepareStatement(sql)) {
-            for(String name : INGREDIENTS) {
-                stm.setString(1, name);
+            for(IngredientName ingredient : IngredientName.values()) {
+                stm.setString(1, ingredient.getName());
                 stm.addBatch();
             }
             stm.executeBatch();
