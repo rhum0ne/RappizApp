@@ -10,8 +10,9 @@ import java.util.List;
 @Getter
 public class RappizServer {
 
-    private final DashboardAppConnector dashboardAppConnector = new DashboardAppConnector();
-    private final ClientAppConnector clientAppConnector = new ClientAppConnector();
+    private final RappizDataStore dataStore = new RappizDataStore();
+    private final DashboardAppConnector dashboardAppConnector = new DashboardAppConnector(dataStore);
+    private final ClientAppConnector clientAppConnector = new ClientAppConnector(dataStore);
     private SeederRunner seederRunner;
 
     public RappizServer() {

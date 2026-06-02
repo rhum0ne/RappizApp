@@ -3,10 +3,10 @@ package fr.rhumain.mobile_app;
 import fr.rhumain.mobile_app.screens.ConnexionScreen;
 import fr.rhumain.rappiz_server.ClientAppConnector;
 import fr.rhumain.structs.User;
+import fr.rhumain.ui.AppTheme;
 import lombok.Getter;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class MobileApp extends JFrame {
@@ -20,12 +20,13 @@ public class MobileApp extends JFrame {
     public MobileApp(ClientAppConnector server) {
         this.server = server;
 
-        this.setTitle("Mobile App");
+        this.setTitle("Rappiz - Client");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(500,   700);
+        this.setSize(500, 700);
 
         this.setScreen(new ConnexionScreen(this));
 
+        this.setLocationRelativeTo(null);
         this.setVisible(true);
         this.setResizable(false);
     }
@@ -33,13 +34,15 @@ public class MobileApp extends JFrame {
 
     public void styleButton(JButton btn) {
         btn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        btn.setFocusPainted(false);
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btn.setBackground(new Color(63, 81, 181)); // Bleu Indigo
-        btn.setForeground(Color.WHITE);
-        btn.setBorder(new EmptyBorder(10, 20, 10, 20));
+        AppTheme.stylePrimaryButton(btn);
+    }
+
+    public User getConnectedUser() {
+        return connectedUser;
+    }
+
+    public void setConnectedUser(User connectedUser) {
+        this.connectedUser = connectedUser;
     }
 
     public void setScreen(JPanel screen) {
@@ -48,5 +51,6 @@ public class MobileApp extends JFrame {
         this.add(this.screen);
 
         this.revalidate();
+        this.repaint();
     }
 }

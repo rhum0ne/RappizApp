@@ -1,111 +1,221 @@
 package fr.rhumain.mobile_app.screens;
 
 import fr.rhumain.mobile_app.MobileApp;
+import fr.rhumain.structs.Ingredient;
 import fr.rhumain.structs.Order;
+import fr.rhumain.structs.Receipt;
+import fr.rhumain.structs.User;
+import fr.rhumain.ui.AppTheme;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HomeScreen extends JPanel {
 
     private final MobileApp mobileApp;
+    private final User user;
 
     public HomeScreen(MobileApp mobileApp) {
         this.mobileApp = mobileApp;
+        this.user = mobileApp.getConnectedUser() != null
+                ? mobileApp.getConnectedUser()
+                : mobileApp.getServer().getUserById(1);
 
-        this.setLayout(new BorderLayout(0, 15)); // 15px d'espacement vertical
+        this.setLayout(new BorderLayout(0, 15));
+        this.setBackground(AppTheme.BACKGROUND);
+        this.setBorder(BorderFactory.createEmptyBorder(18, 18, 18, 18));
 
         // --- EN-TÊTE (Titre + Bouton) ---
-        JPanel headerPanel = new JPanel();
-        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
-        headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        JLabel title = new JLabel("Bienvenue sur Rappiz !");
-        title.setFont(new Font("Arial", Font.BOLD, 18));
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        headerPanel.add(title);
-
-        headerPanel.add(Box.createRigidArea(new Dimension(0, 15))); // Espacement
-
-        JButton orderButton = new JButton("Passer une commande");
-        orderButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        orderButton.addActionListener(e -> mobileApp.setScreen(new OrderScreen(mobileApp)));
-        mobileApp.styleButton(orderButton);
-        headerPanel.add(orderButton);
-
-        this.add(headerPanel, BorderLayout.NORTH);
+        this.add(createHeaderPanel(), BorderLayout.NORTH);
 
         // --- CONTENU (Liste des commandes avec Scroll) ---
         JPanel ordersPanel = createOrdersPanel();
         JScrollPane scrollPane = new JScrollPane(ordersPanel);
-        scrollPane.setBorder(null); // Retire la bordure moche du scrollpane par défaut
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Scroll plus fluide
+        scrollPane.setBorder(null);
+        scrollPane.getViewport().setBackground(AppTheme.BACKGROUND);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
         this.add(scrollPane, BorderLayout.CENTER);
+    }
+
+    private JPanel createHeaderPanel() {
+        JPanel headerPanel = new JPanel();
+        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
+        AppTheme.styleCard(headerPanel);
+
+        JLabel title = new JLabel("Bonjour " + user.firstName() + " !");
+        title.setFont(AppTheme.TITLE_FONT);
+        title.setForeground(AppTheme.TEXT);
+        title.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel subtitle = new JLabel(user.email());
+        subtitle.setFont(AppTheme.BODY_FONT);
+        subtitle.setForeground(AppTheme.MUTED_TEXT);
+        subtitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel balance = new JLabel("Solde prépayé : " + mobileApp.getServer().getCustomerBalance(user.id()) + " €");
+        balance.setFont(AppTheme.SECTION_FONT);
+        balance.setForeground(AppTheme.PRIMARY);
+        balance.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        int fidelityCount = mobileApp.getServer().getBoughtPizzaCount(user.id()) % 10;
+        JLabel fidelity = new JLabel("Fidélité : " + fidelityCount + "/10 pizzas avant la prochaine offerte");
+        fidelity.setFont(AppTheme.BODY_FONT);
+        fidelity.setForeground(AppTheme.MUTED_TEXT);
+        fidelity.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JButton orderButton = new JButton("Passer une commande");
+        orderButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        orderButton.addActionListener(e -> mobileApp.setScreen(new OrderScreen(mobileApp)));
+        mobileApp.styleButton(orderButton);
+
+        headerPanel.add(title);
+        headerPanel.add(Box.createRigidArea(new Dimension(0, 4)));
+        headerPanel.add(subtitle);
+        headerPanel.add(Box.createRigidArea(new Dimension(0, 12)));
+        headerPanel.add(balance);
+        headerPanel.add(Box.createRigidArea(new Dimension(0, 4)));
+        headerPanel.add(fidelity);
+        headerPanel.add(Box.createRigidArea(new Dimension(0, 16)));
+        headerPanel.add(orderButton);
+
+        return headerPanel;
     }
 
     private JPanel createOrdersPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+        panel.setBackground(AppTheme.BACKGROUND);
 
-        // Récupération des données mockées via le connecteur
-        // Je mets l'ID utilisateur "1" arbitrairement pour le test
-        List<Order> orders = mobileApp.getServer().getOrdersByUserId(1);
+        Order activeOrder = mobileApp.getServer().getActiveOrder(user.id());
+        if (activeOrder != null) {
+            panel.add(createSectionTitle("Commande en cours"));
+            panel.add(Box.createRigidArea(new Dimension(0, 8)));
+            panel.add(createOrderComponent(activeOrder));
+            panel.add(Box.createRigidArea(new Dimension(0, 18)));
+        }
 
-        for (Order order : orders) {
-            panel.add(createOrderComponent(order));
-            panel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacement entre chaque carte
+        panel.add(createSectionTitle("Historique des commandes"));
+        panel.add(Box.createRigidArea(new Dimension(0, 8)));
+
+        List<Order> orders = mobileApp.getServer().getOrdersByUserId(user.id())
+                .stream()
+                .filter(order -> activeOrder == null || order.id() != activeOrder.id())
+                .toList();
+        if (orders.isEmpty()) {
+            panel.add(createEmptyState());
+        } else {
+            for (Order order : orders) {
+                panel.add(createOrderComponent(order));
+                panel.add(Box.createRigidArea(new Dimension(0, 10)));
+            }
+        }
+
+        panel.add(Box.createRigidArea(new Dimension(0, 8)));
+        panel.add(createSectionTitle("Reçus et factures"));
+        panel.add(Box.createRigidArea(new Dimension(0, 8)));
+        for (Receipt receipt : mobileApp.getServer().getReceiptsByUserId(user.id())) {
+            panel.add(createReceiptComponent(receipt));
+            panel.add(Box.createRigidArea(new Dimension(0, 10)));
         }
 
         return panel;
     }
 
+    private JLabel createSectionTitle(String text) {
+        JLabel label = new JLabel(text);
+        label.setFont(AppTheme.SECTION_FONT);
+        label.setForeground(AppTheme.TEXT);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return label;
+    }
+
     private JComponent createOrderComponent(final Order order) {
         JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        AppTheme.styleCard(panel);
+        panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // Configuration du layout (1 colonne, nombre de lignes dynamique, marges de 5px)
-        panel.setLayout(new GridLayout(0, 1, 5, 5));
-
-        // Ajout d'une bordure avec le numéro de la commande comme titre
-        panel.setBorder(BorderFactory.createTitledBorder("Commande #" + order.id()));
-
-        // Création des labels pour les informations principales
-        JLabel userLabel = new JLabel("ID Utilisateur : " + order.idUser());
-
-        // Utilisation propre des accesseurs des records au lieu de toString()
         String pizzaName = order.pizza() != null ? order.pizza().name() : "Inconnue";
         String formatName = order.format() != null ? order.format().nom() : "N/A";
-        JLabel pizzaLabel = new JLabel("Pizza : " + pizzaName + " (Format : " + formatName + ")");
+        String ingredients = order.pizza() != null
+                ? Arrays.stream(order.pizza().ingredients()).map(Ingredient::nom).collect(Collectors.joining(", "))
+                : "Non renseignés";
 
-        JLabel timeLabel = new JLabel("Créée le : " + (order.timeStamp() != null ? order.timeStamp() : "N/A"));
-        JLabel timeDeliveryLabel = new JLabel("Livraison : " + (order.timeStampLivraison() != null ? order.timeStampLivraison() : "En attente"));
+        JLabel title = new JLabel("Commande #" + order.id() + " - " + getStatus(order));
+        title.setFont(AppTheme.SECTION_FONT);
+        title.setForeground(order.timeStampLivraison() == null ? AppTheme.WARNING : AppTheme.SUCCESS);
+        title.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel priceLabel = new JLabel("Prix total : " + order.price() + " €");
+        panel.add(title);
+        panel.add(Box.createRigidArea(new Dimension(0, 8)));
+        panel.add(createInfoLine("Pizza", pizzaName + " - " + formatName));
+        panel.add(createInfoLine("Ingrédients", ingredients));
+        panel.add(createInfoLine("Prix total", order.price() + " €"));
+        panel.add(createInfoLine("Commandée le", order.timeStamp()));
+        panel.add(createInfoLine("Livraison", order.timeStampLivraison() != null ? order.timeStampLivraison() : "En préparation"));
+        panel.add(createInfoLine("Livreur", getDeliveryInfo(order)));
 
-        // Informations sur la livraison (utilisation des getters du record Livreur et Vehicule)
-        String livreurName = order.livreur() != null ? (order.livreur().firstName() + " " + order.livreur().lastName()) : "Non assigné";
-        String vehiculeName = order.vehicule() != null ? (order.vehicule().brand() + " " + order.vehicule().model()) : "Aucun";
-        JLabel deliveryLabel = new JLabel("Livreur : " + livreurName + " | Véhicule : " + vehiculeName);
-
-        // Ajout des composants au panneau
-        panel.add(userLabel);
-        panel.add(pizzaLabel);
-        panel.add(priceLabel);
-        panel.add(timeLabel);
-        panel.add(timeDeliveryLabel);
-        panel.add(deliveryLabel);
-
-        // Marge interne supplémentaire
-        panel.setBorder(BorderFactory.createCompoundBorder(
-                panel.getBorder(),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-
-        // Empêche la carte de prendre toute la hauteur disponible dans le BoxLayout
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
 
         return panel;
+    }
+
+    private JLabel createInfoLine(String label, String value) {
+        JLabel info = new JLabel(label + " : " + value);
+        info.setFont(AppTheme.BODY_FONT);
+        info.setForeground(AppTheme.TEXT);
+        info.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return info;
+    }
+
+    private JComponent createEmptyState() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        AppTheme.styleCard(panel);
+
+        JLabel label = new JLabel("Aucune commande pour le moment.");
+        label.setFont(AppTheme.BODY_FONT);
+        label.setForeground(AppTheme.MUTED_TEXT);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(label);
+
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
+        return panel;
+    }
+
+    private JComponent createReceiptComponent(Receipt receipt) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        AppTheme.styleCard(panel);
+        panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel title = new JLabel("Reçu #" + receipt.id());
+        title.setFont(AppTheme.SECTION_FONT);
+        title.setForeground(AppTheme.PRIMARY);
+        title.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        panel.add(title);
+        panel.add(Box.createRigidArea(new Dimension(0, 8)));
+        panel.add(createInfoLine("Commande associée", "#" + receipt.idOrder()));
+        panel.add(createInfoLine("Montant payé", receipt.price() + " €"));
+
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
+        return panel;
+    }
+
+    private String getStatus(Order order) {
+        return order.timeStampLivraison() == null ? "En préparation" : "Livrée";
+    }
+
+    private String getDeliveryInfo(Order order) {
+        if (order.livreur() == null || order.vehicule() == null) {
+            return "Livreur non assigné";
+        }
+        return order.livreur().firstName() + " " + order.livreur().lastName()
+                + " (" + order.vehicule().brand() + " " + order.vehicule().model() + ")";
     }
 }
