@@ -1,4 +1,4 @@
 package fr.rhumain.structs;
 
-public record Format(String nom, int pricePercetage) {
+public record Format(Integer id, String nom, int pricePercetage) {
 }

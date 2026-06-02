@@ -33,6 +33,8 @@ public class RappizDataStore {
     private int nextOrderId = 1005;
     private int nextReceiptId = 5005;
 
+    private User
+
     public RappizDataStore() {
         seedData();
     }
@@ -79,6 +81,7 @@ public class RappizDataStore {
         if (getCustomerBalance(idUser) < price) {
             return null;
         }
+        User user =
 
         Order order = new Order(
                 nextOrderId++,
@@ -104,7 +107,7 @@ public class RappizDataStore {
                 Livreur livreur = livreurs.get(i % livreurs.size());
                 orders.set(i, new Order(
                         order.id(),
-                        order.idUser(),
+                        order.User(),
                         order.pizza(),
                         order.format(),
                         order.timeStamp(),
@@ -129,7 +132,7 @@ public class RappizDataStore {
 
     public synchronized int getBoughtPizzaCount(int idUser) {
         return (int) orders.stream()
-                .filter(order -> order.idUser() == idUser)
+                .filter(order -> order.User().id() == idUser)
                 .filter(order -> order.timeStampLivraison() != null)
                 .count();
     }
@@ -178,10 +181,10 @@ public class RappizDataStore {
                 new Livreur(12, "Hugo", "Bernard", "hugo.bernard@rappiz.fr", "rappiz", voiture)
         ));
 
-        orders.add(new Order(1001, 1, margherita, humaine, "30/05/2026 19:10", "30/05/2026 19:38", calculatePrice(margherita, humaine), livreurs.get(0), scooter));
-        orders.add(new Order(1002, 1, chevreMiel, ogresse, "01/06/2026 20:05", null, calculatePrice(chevreMiel, ogresse), null, null));
-        orders.add(new Order(1003, 2, reine, naine, "01/06/2026 12:30", "01/06/2026 12:55", calculatePrice(reine, naine), livreurs.get(1), velo));
-        orders.add(new Order(1004, 3, caliente, humaine, "02/06/2026 11:00", "02/06/2026 11:42", 0, livreurs.get(2), voiture));
+        orders.add(new Order(1001, users.get(0), margherita, humaine, "30/05/2026 19:10", "30/05/2026 19:38", calculatePrice(margherita, humaine), livreurs.get(0), scooter));
+        orders.add(new Order(1002, users.get(0), chevreMiel, ogresse, "01/06/2026 20:05", null, calculatePrice(chevreMiel, ogresse), null, null));
+        orders.add(new Order(1003, users.get(1), reine, naine, "01/06/2026 12:30", "01/06/2026 12:55", calculatePrice(reine, naine), livreurs.get(1), velo));
+        orders.add(new Order(1004, users.get(3), caliente, humaine, "02/06/2026 11:00", "02/06/2026 11:42", 0, livreurs.get(2), voiture));
 
         receipts.add(new Receipt(5001, 1001, calculatePrice(margherita, humaine), 1));
         receipts.add(new Receipt(5002, 1002, calculatePrice(chevreMiel, ogresse), 1));

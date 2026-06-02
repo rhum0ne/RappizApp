@@ -1,4 +1,4 @@
 package fr.rhumain.structs;
 
-public record Receipt(int id, int idOrder, int price, int idUser) {
+public record Receipt(Integer id, int idOrder, int price, int idUser) {
 }

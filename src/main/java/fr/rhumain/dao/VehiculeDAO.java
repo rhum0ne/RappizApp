@@ -63,6 +63,7 @@ public class VehiculeDAO implements DAO<Vehicule, Integer> {
                 if(keys.next()) {
                     return new Vehicule(keys.getInt("id"), entity.brand(), entity.model());
                 }
+                throw new DAOException("[VehiculeDAO] No generated key returned when saving vehicule");
             }
         } catch (SQLException e) {
             throw new DAOException("[VehiculeDAO] Impossible to save vehicule ", e);

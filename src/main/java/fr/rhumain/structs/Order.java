@@ -1,4 +1,7 @@
 package fr.rhumain.structs;
 
-public record Order(int id, int idUser, Pizza pizza, Format format, String timeStamp, String timeStampLivraison, int price, Livreur livreur, Vehicule vehicule) {
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
+public record Order(Integer id, User User, Pizza pizza, Format format, Timestamp timeStamp, Timestamp timeStampLivraison, int price, Livreur livreur, Vehicule vehicule) {
 }
