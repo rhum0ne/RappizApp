@@ -9,9 +9,7 @@ import fr.rhumain.seeders.references.PizzaDefinitions;
 import fr.rhumain.structs.Ingredient;
 import fr.rhumain.structs.Pizza;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -40,15 +38,50 @@ public class PizzasSeeder implements DataSeeder {
     }
 
     @Override
-    public void seed() throws DAOException {
+    public void seed() throws DAOException, SQLException {
         String sql = "INSERT INTO pizzas (name, price) VALUES (?, ?)";
-        try(PreparedStatement stm = ConnectionManager.getConnection().prepareStatement(sql)) {
+        Map<IngredientName, Ingredient> ingredientsByName = loadIngredientsCache();
+        Connection conn = ConnectionManager.getConnection();
+        try {
+            conn.setAutoCommit(false);
             for(PizzaDefinition pizzaDef : PizzaDefinitions.ALL) {
-                stm.setString(1, pizzaDef.name());
-                stm.setInt(2, pizzaDef.price());
+                int pizzaId = insertPizza(conn, pizzaDef);
+                insertPizzaIngredients(conn, pizzaId, pizzaDef, ingredientsByName);
             }
+            conn.commit();
         } catch (SQLException e) {
-            throw new DAOException("[PizzasDAO] Impossible to seed pizzas");
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {}
+            throw new DAOException("[PizzasDAO] Impossible to seed pizzas", e);
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException ex) {}
+        }
+    }
+
+    private int insertPizza(Connection conn, PizzaDefinition pizzaDef) throws SQLException {
+        String sql = "INSERT INTO pizzas (name, price) VALUES (?, ?)";
+        PreparedStatement stm = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        stm.setString(1, pizzaDef.name());
+        stm.setInt(2, pizzaDef.price());
+        stm.executeUpdate();
+        try (ResultSet keys = stm.getGeneratedKeys()) {
+            if (keys.next()) return keys.getInt(1);
+            throw new SQLException("Aucun ID genere pour la pizza " + pizzaDef.name());
+        }
+    }
+
+    private void insertPizzaIngredients(Connection conn, int pizzaId, PizzaDefinition pizzaDef, Map<IngredientName, Ingredient> ingredientsByName) throws SQLException {
+        String sql = "INSERT INTO pizza_ingredients (id_pizza, id_ingredient) VALUES (?, ?)";
+        try(PreparedStatement stm = conn.prepareStatement(sql)) {
+            for(IngredientName name : pizzaDef.ingredients()) {
+                stm.setInt(1, pizzaId);
+                stm.setInt(2, ingredientsByName.get(name).id());
+                stm.addBatch();
+            }
+            stm.executeBatch();
         }
     }
 

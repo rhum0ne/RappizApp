@@ -2,6 +2,7 @@ package fr.rhumain.seeders;
 
 import fr.rhumain.exceptions.DAOException;
 
+import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.List;
 
@@ -30,6 +31,8 @@ public class SeederRunner {
             System.out.println("[Seeder] " + seeder.getName() + " : insertion complete");
         } catch (DAOException e) {
             System.out.println("[Seeder] " + seeder.getName() + " : error while seeding " + e.getMessage());
+        } catch (SQLException e) {
+
         }
     }
 }
