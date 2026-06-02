@@ -2,99 +2,11 @@
 <dataSource name="rapizz@localhost">
   <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.53">
     <root id="1">
-      <DefaultAuthPlugin>caching_sha2_password</DefaultAuthPlugin>
+      <DefaultAuthPlugin>mysql_native_password</DefaultAuthPlugin>
       <DefaultCasing>lower/lower</DefaultCasing>
       <DefaultEngine>InnoDB</DefaultEngine>
       <DefaultTmpEngine>InnoDB</DefaultTmpEngine>
-      <Grants>|root||root|localhost|ALTER|G
-|root||root|localhost|ALTER ROUTINE|G
-|root||root|localhost|APPLICATION_PASSWORD_ADMIN|G
-|root||mysql.infoschema|localhost|AUDIT_ABORT_EXEMPT|G
-|root||mysql.session|localhost|AUDIT_ABORT_EXEMPT|G
-|root||mysql.sys|localhost|AUDIT_ABORT_EXEMPT|G
-|root||root|localhost|AUDIT_ABORT_EXEMPT|G
-|root||root|localhost|AUDIT_ADMIN|G
-|root||mysql.session|localhost|AUTHENTICATION_POLICY_ADMIN|G
-|root||root|localhost|AUTHENTICATION_POLICY_ADMIN|G
-|root||mysql.session|localhost|BACKUP_ADMIN|G
-|root||root|localhost|BACKUP_ADMIN|G
-|root||root|localhost|BINLOG_ADMIN|G
-|root||root|localhost|BINLOG_ENCRYPTION_ADMIN|G
-|root||mysql.session|localhost|CLONE_ADMIN|G
-|root||root|localhost|CLONE_ADMIN|G
-|root||mysql.session|localhost|CONNECTION_ADMIN|G
-|root||root|localhost|CONNECTION_ADMIN|G
-|root||root|localhost|CREATE|G
-|root||root|localhost|CREATE ROLE|G
-|root||root|localhost|CREATE ROUTINE|G
-|root||root|localhost|CREATE TABLESPACE|G
-|root||root|localhost|CREATE TEMPORARY TABLES|G
-|root||root|localhost|CREATE USER|G
-|root||root|localhost|CREATE VIEW|G
-|root||root|localhost|DELETE|G
-|root||root|localhost|DROP|G
-|root||root|localhost|DROP ROLE|G
-|root||root|localhost|ENCRYPTION_KEY_ADMIN|G
-|root||root|localhost|EVENT|G
-|root||root|localhost|EXECUTE|G
-|root||root|localhost|FILE|G
-|root||mysql.infoschema|localhost|FIREWALL_EXEMPT|G
-|root||mysql.session|localhost|FIREWALL_EXEMPT|G
-|root||mysql.sys|localhost|FIREWALL_EXEMPT|G
-|root||root|localhost|FIREWALL_EXEMPT|G
-|root||root|localhost|FLUSH_OPTIMIZER_COSTS|G
-|root||root|localhost|FLUSH_STATUS|G
-|root||root|localhost|FLUSH_TABLES|G
-|root||root|localhost|FLUSH_USER_RESOURCES|G
-|root||root|localhost|GROUP_REPLICATION_ADMIN|G
-|root||root|localhost|GROUP_REPLICATION_STREAM|G
-|root||root|localhost|INDEX|G
-|root||root|localhost|INNODB_REDO_LOG_ARCHIVE|G
-|root||root|localhost|INNODB_REDO_LOG_ENABLE|G
-|root||root|localhost|INSERT|G
-|root||root|localhost|LOCK TABLES|G
-|root||root|localhost|PASSWORDLESS_USER_ADMIN|G
-|root||mysql.session|localhost|PERSIST_RO_VARIABLES_ADMIN|G
-|root||root|localhost|PERSIST_RO_VARIABLES_ADMIN|G
-|root||root|localhost|PROCESS|G
-|root||root|localhost|REFERENCES|G
-|root||root|localhost|RELOAD|G
-|root||root|localhost|REPLICATION CLIENT|G
-|root||root|localhost|REPLICATION SLAVE|G
-|root||root|localhost|REPLICATION_APPLIER|G
-|root||root|localhost|REPLICATION_SLAVE_ADMIN|G
-|root||root|localhost|RESOURCE_GROUP_ADMIN|G
-|root||root|localhost|RESOURCE_GROUP_USER|G
-|root||root|localhost|ROLE_ADMIN|G
-|root||mysql.infoschema|localhost|SELECT|G
-|root||root|localhost|SELECT|G
-|root||root|localhost|SENSITIVE_VARIABLES_OBSERVER|G
-|root||root|localhost|SERVICE_CONNECTION_ADMIN|G
-|root||mysql.session|localhost|SESSION_VARIABLES_ADMIN|G
-|root||root|localhost|SESSION_VARIABLES_ADMIN|G
-|root||root|localhost|SET_USER_ID|G
-|root||root|localhost|SHOW DATABASES|G
-|root||root|localhost|SHOW VIEW|G
-|root||root|localhost|SHOW_ROUTINE|G
-|root||mysql.session|localhost|SHUTDOWN|G
-|root||root|localhost|SHUTDOWN|G
-|root||mysql.session|localhost|SUPER|G
-|root||root|localhost|SUPER|G
-|root||mysql.infoschema|localhost|SYSTEM_USER|G
-|root||mysql.session|localhost|SYSTEM_USER|G
-|root||mysql.sys|localhost|SYSTEM_USER|G
-|root||root|localhost|SYSTEM_USER|G
-|root||mysql.session|localhost|SYSTEM_VARIABLES_ADMIN|G
-|root||root|localhost|SYSTEM_VARIABLES_ADMIN|G
-|root||root|localhost|TABLE_ENCRYPTION_ADMIN|G
-|root||root|localhost|TELEMETRY_LOG_ADMIN|G
-|root||root|localhost|TRIGGER|G
-|root||root|localhost|UPDATE|G
-|root||root|localhost|XA_RECOVER_ADMIN|G
-|root||root|localhost|grant option|G
-performance_schema|schema||mysql.session|localhost|SELECT|G
-sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
-      <ServerVersion>8.0.45</ServerVersion>
+      <ServerVersion>8.0.40</ServerVersion>
     </root>
     <collation id="2" parent="1" name="armscii8_general_ci">
       <Charset>armscii8</Charset>
@@ -995,436 +907,496 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
     <collation id="287" parent="1" name="utf8mb4_mn_cyrl_0900_as_cs">
       <Charset>utf8mb4</Charset>
     </collation>
-    <schema id="288" parent="1" name="information_schema">
+    <schema id="288" parent="1" name="budgetmanager">
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </schema>
+    <schema id="289" parent="1" name="budgetmanagerapi">
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </schema>
+    <schema id="290" parent="1" name="information_schema">
       <CollationName>utf8mb3_general_ci</CollationName>
     </schema>
-    <schema id="289" parent="1" name="mysql">
+    <schema id="291" parent="1" name="minebase">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="290" parent="1" name="performance_schema">
+    <schema id="292" parent="1" name="minemarket">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="291" parent="1" name="rapizz">
+    <schema id="293" parent="1" name="mysql">
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </schema>
+    <schema id="294" parent="1" name="performance_schema">
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </schema>
+    <schema id="295" parent="1" name="rapizz">
       <AutoIntrospectionLevel>3</AutoIntrospectionLevel>
       <Current>1</Current>
       <LastIntrospectionLevel>3</LastIntrospectionLevel>
-      <LastIntrospectionLocalTimestamp>2026-06-02.12:21:36</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2026-06-02.15:22:27</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <schema id="296" parent="1" name="sys">
-      <LastIntrospectionLocalTimestamp>2026-06-01.15:54:11</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="292" parent="1" name="sys">
+    <schema id="297" parent="1" name="texify_db">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="293" parent="1" name="tp1">
+    <schema id="298" parent="1" name="tp1">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <user id="294" parent="1" name="mysql.infoschema">
+    <user id="299" parent="1" name="mysql.infoschema">
       <CanLogin>0</CanLogin>
       <Host>localhost</Host>
+      <Plugin>caching_sha2_password</Plugin>
     </user>
-    <user id="295" parent="1" name="mysql.session">
+    <user id="300" parent="1" name="mysql.session">
       <CanLogin>0</CanLogin>
       <Host>localhost</Host>
+      <Plugin>caching_sha2_password</Plugin>
     </user>
-    <user id="296" parent="1" name="mysql.sys">
+    <user id="301" parent="1" name="mysql.sys">
       <CanLogin>0</CanLogin>
       <Host>localhost</Host>
+      <Plugin>caching_sha2_password</Plugin>
     </user>
-    <user id="297" parent="1" name="root">
+    <user id="302" parent="1" name="root">
       <Host>localhost</Host>
     </user>
-    <table id="298" parent="291" name="customers">
+    <table id="303" parent="295" name="customers">
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="299" parent="291" name="delivers">
+    <table id="304" parent="295" name="delivers">
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="300" parent="291" name="formats">
+    <table id="305" parent="295" name="formats">
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="301" parent="291" name="ingredients">
+    <table id="306" parent="295" name="ingredients">
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="302" parent="291" name="orders">
+    <table id="307" parent="295" name="orders">
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="303" parent="291" name="pizza_ingredients">
+    <table id="308" parent="295" name="pizza_ingredients">
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="304" parent="291" name="pizzas">
+    <table id="309" parent="295" name="pizzas">
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="305" parent="291" name="receipts">
+    <table id="310" parent="295" name="receipts">
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="306" parent="291" name="vehicules">
+    <table id="311" parent="295" name="vehicules">
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <column id="307" parent="298" name="id">
+    <column id="312" parent="303" name="id">
       <AutoIncrement>1</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="308" parent="298" name="first_name">
+    <column id="313" parent="303" name="first_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(50)|0s</StoredType>
     </column>
-    <column id="309" parent="298" name="last_name">
+    <column id="314" parent="303" name="last_name">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>varchar(50)|0s</StoredType>
     </column>
-    <column id="310" parent="298" name="balance">
+    <column id="315" parent="303" name="balance">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <index id="311" parent="298" name="PRIMARY">
+    <index id="316" parent="303" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="312" parent="298" name="PRIMARY">
+    <key id="317" parent="303" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="313" parent="299" name="id">
+    <column id="318" parent="304" name="id">
       <AutoIncrement>1</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="314" parent="299" name="name">
+    <column id="319" parent="304" name="first_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(50)|0s</StoredType>
     </column>
-    <index id="315" parent="299" name="PRIMARY">
-      <ColNames>id</ColNames>
-      <Type>btree</Type>
-      <Unique>1</Unique>
-    </index>
-    <key id="316" parent="299" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <Primary>1</Primary>
-      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
-    </key>
-    <column id="317" parent="300" name="id">
-      <AutoIncrement>1</AutoIncrement>
-      <NotNull>1</NotNull>
-      <Position>1</Position>
-      <StoredType>int|0s</StoredType>
-    </column>
-    <column id="318" parent="300" name="name">
-      <NotNull>1</NotNull>
-      <Position>2</Position>
-      <StoredType>varchar(50)|0s</StoredType>
-    </column>
-    <column id="319" parent="300" name="percentage">
+    <column id="320" parent="304" name="last_name">
       <NotNull>1</NotNull>
       <Position>3</Position>
-      <StoredType>int|0s</StoredType>
-    </column>
-    <index id="320" parent="300" name="PRIMARY">
-      <ColNames>id</ColNames>
-      <Type>btree</Type>
-      <Unique>1</Unique>
-    </index>
-    <key id="321" parent="300" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <Primary>1</Primary>
-      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
-    </key>
-    <column id="322" parent="301" name="id">
-      <AutoIncrement>1</AutoIncrement>
-      <NotNull>1</NotNull>
-      <Position>1</Position>
-      <StoredType>int|0s</StoredType>
-    </column>
-    <column id="323" parent="301" name="name">
-      <NotNull>1</NotNull>
-      <Position>2</Position>
       <StoredType>varchar(50)|0s</StoredType>
     </column>
-    <index id="324" parent="301" name="PRIMARY">
-      <ColNames>id</ColNames>
-      <Type>btree</Type>
-      <Unique>1</Unique>
-    </index>
-    <key id="325" parent="301" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <Primary>1</Primary>
-      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
-    </key>
-    <column id="326" parent="302" name="id">
-      <AutoIncrement>1</AutoIncrement>
-      <NotNull>1</NotNull>
-      <Position>1</Position>
-      <StoredType>int|0s</StoredType>
-    </column>
-    <column id="327" parent="302" name="id_customer">
-      <NotNull>1</NotNull>
-      <Position>2</Position>
-      <StoredType>int|0s</StoredType>
-    </column>
-    <column id="328" parent="302" name="id_pizza">
-      <NotNull>1</NotNull>
-      <Position>3</Position>
-      <StoredType>int|0s</StoredType>
-    </column>
-    <column id="329" parent="302" name="id_size">
+    <column id="321" parent="304" name="email">
       <NotNull>1</NotNull>
       <Position>4</Position>
-      <StoredType>int|0s</StoredType>
+      <StoredType>varchar(50)|0s</StoredType>
     </column>
-    <column id="330" parent="302" name="timestamp_order">
+    <column id="322" parent="304" name="password">
       <NotNull>1</NotNull>
       <Position>5</Position>
-      <StoredType>datetime|0s</StoredType>
+      <StoredType>varchar(50)|0s</StoredType>
     </column>
-    <column id="331" parent="302" name="timestamp_deliver">
+    <column id="323" parent="304" name="id_vehicule">
       <NotNull>1</NotNull>
       <Position>6</Position>
-      <StoredType>datetime|0s</StoredType>
-    </column>
-    <column id="332" parent="302" name="final_price">
-      <NotNull>1</NotNull>
-      <Position>7</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="333" parent="302" name="id_deliver">
-      <NotNull>1</NotNull>
-      <Position>8</Position>
-      <StoredType>int|0s</StoredType>
-    </column>
-    <column id="334" parent="302" name="id_vehicule">
-      <NotNull>1</NotNull>
-      <Position>9</Position>
-      <StoredType>int|0s</StoredType>
-    </column>
-    <foreign-key id="335" parent="302" name="fk_customers_orders">
-      <ColNames>id_customer</ColNames>
-      <OnDelete>cascade</OnDelete>
-      <OnUpdate>cascade</OnUpdate>
-      <RefColNames>id</RefColNames>
-      <RefTableName>customers</RefTableName>
-    </foreign-key>
-    <foreign-key id="336" parent="302" name="fk_pizzas_orders">
-      <ColNames>id_pizza</ColNames>
-      <OnDelete>cascade</OnDelete>
-      <OnUpdate>cascade</OnUpdate>
-      <RefColNames>id</RefColNames>
-      <RefTableName>pizzas</RefTableName>
-    </foreign-key>
-    <foreign-key id="337" parent="302" name="fk_sizes_orders">
-      <ColNames>id_size</ColNames>
-      <OnDelete>cascade</OnDelete>
-      <OnUpdate>cascade</OnUpdate>
-      <RefColNames>id</RefColNames>
-      <RefTableName>formats</RefTableName>
-    </foreign-key>
-    <foreign-key id="338" parent="302" name="fk_delivers_orders">
-      <ColNames>id_deliver</ColNames>
-      <OnDelete>cascade</OnDelete>
-      <OnUpdate>cascade</OnUpdate>
-      <RefColNames>id</RefColNames>
-      <RefTableName>delivers</RefTableName>
-    </foreign-key>
-    <foreign-key id="339" parent="302" name="fk_vehicules_orders">
+    <foreign-key id="324" parent="304" name="fk_vehicules_delivers">
       <ColNames>id_vehicule</ColNames>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
       <RefColNames>id</RefColNames>
       <RefTableName>vehicules</RefTableName>
     </foreign-key>
-    <index id="340" parent="302" name="PRIMARY">
+    <index id="325" parent="304" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="341" parent="302" name="fk_customers_orders">
-      <ColNames>id_customer</ColNames>
-      <Type>btree</Type>
-    </index>
-    <index id="342" parent="302" name="fk_pizzas_orders">
-      <ColNames>id_pizza</ColNames>
-      <Type>btree</Type>
-    </index>
-    <index id="343" parent="302" name="fk_sizes_orders">
-      <ColNames>id_size</ColNames>
-      <Type>btree</Type>
-    </index>
-    <index id="344" parent="302" name="fk_delivers_orders">
-      <ColNames>id_deliver</ColNames>
-      <Type>btree</Type>
-    </index>
-    <index id="345" parent="302" name="fk_vehicules_orders">
+    <index id="326" parent="304" name="fk_vehicules_delivers">
       <ColNames>id_vehicule</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="346" parent="302" name="PRIMARY">
+    <key id="327" parent="304" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="347" parent="303" name="id_pizza_ingredients">
-      <AutoIncrement>1</AutoIncrement>
+    <column id="328" parent="305" name="id">
+      <AutoIncrement>4</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="348" parent="303" name="id_pizza">
-      <NotNull>1</NotNull>
-      <Position>2</Position>
-      <StoredType>int|0s</StoredType>
-    </column>
-    <column id="349" parent="303" name="id_ingredient">
-      <NotNull>1</NotNull>
-      <Position>3</Position>
-      <StoredType>int|0s</StoredType>
-    </column>
-    <foreign-key id="350" parent="303" name="fk_pizzas_pizza_ingredients">
-      <ColNames>id_pizza</ColNames>
-      <OnDelete>cascade</OnDelete>
-      <OnUpdate>cascade</OnUpdate>
-      <RefColNames>id</RefColNames>
-      <RefTableName>pizzas</RefTableName>
-    </foreign-key>
-    <foreign-key id="351" parent="303" name="fk_ingredients_pizza_ingredients">
-      <ColNames>id_ingredient</ColNames>
-      <OnDelete>cascade</OnDelete>
-      <OnUpdate>cascade</OnUpdate>
-      <RefColNames>id</RefColNames>
-      <RefTableName>ingredients</RefTableName>
-    </foreign-key>
-    <index id="352" parent="303" name="PRIMARY">
-      <ColNames>id_pizza_ingredients</ColNames>
-      <Type>btree</Type>
-      <Unique>1</Unique>
-    </index>
-    <index id="353" parent="303" name="fk_pizzas_pizza_ingredients">
-      <ColNames>id_pizza</ColNames>
-      <Type>btree</Type>
-    </index>
-    <index id="354" parent="303" name="fk_ingredients_pizza_ingredients">
-      <ColNames>id_ingredient</ColNames>
-      <Type>btree</Type>
-    </index>
-    <key id="355" parent="303" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <Primary>1</Primary>
-      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
-    </key>
-    <column id="356" parent="304" name="id">
-      <AutoIncrement>1</AutoIncrement>
-      <NotNull>1</NotNull>
-      <Position>1</Position>
-      <StoredType>int|0s</StoredType>
-    </column>
-    <column id="357" parent="304" name="name">
+    <column id="329" parent="305" name="name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(50)|0s</StoredType>
     </column>
-    <index id="358" parent="304" name="PRIMARY">
+    <column id="330" parent="305" name="percentage">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <index id="331" parent="305" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="359" parent="304" name="PRIMARY">
+    <key id="332" parent="305" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="360" parent="305" name="id">
+    <column id="333" parent="306" name="id">
+      <AutoIncrement>20</AutoIncrement>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="334" parent="306" name="name">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>varchar(50)|0s</StoredType>
+    </column>
+    <index id="335" parent="306" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="336" parent="306" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="337" parent="307" name="id">
       <AutoIncrement>1</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="361" parent="305" name="id_order">
+    <column id="338" parent="307" name="id_customer">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="362" parent="305" name="id_customer">
+    <column id="339" parent="307" name="id_pizza">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="363" parent="305" name="final_price">
+    <column id="340" parent="307" name="id_size">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <foreign-key id="364" parent="305" name="fk_orders_receipts">
-      <ColNames>id_order</ColNames>
-      <OnDelete>cascade</OnDelete>
-      <OnUpdate>cascade</OnUpdate>
-      <RefColNames>id</RefColNames>
-      <RefTableName>orders</RefTableName>
-    </foreign-key>
-    <foreign-key id="365" parent="305" name="fk_customers_receipts">
+    <column id="341" parent="307" name="timestamp_order">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StoredType>datetime|0s</StoredType>
+    </column>
+    <column id="342" parent="307" name="timestamp_deliver">
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StoredType>datetime|0s</StoredType>
+    </column>
+    <column id="343" parent="307" name="final_price">
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="344" parent="307" name="id_deliver">
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="345" parent="307" name="id_vehicule">
+      <NotNull>1</NotNull>
+      <Position>9</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <foreign-key id="346" parent="307" name="fk_customers_orders">
       <ColNames>id_customer</ColNames>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
       <RefColNames>id</RefColNames>
       <RefTableName>customers</RefTableName>
     </foreign-key>
-    <index id="366" parent="305" name="PRIMARY">
+    <foreign-key id="347" parent="307" name="fk_pizzas_orders">
+      <ColNames>id_pizza</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefTableName>pizzas</RefTableName>
+    </foreign-key>
+    <foreign-key id="348" parent="307" name="fk_sizes_orders">
+      <ColNames>id_size</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefTableName>formats</RefTableName>
+    </foreign-key>
+    <foreign-key id="349" parent="307" name="fk_delivers_orders">
+      <ColNames>id_deliver</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefTableName>delivers</RefTableName>
+    </foreign-key>
+    <foreign-key id="350" parent="307" name="fk_vehicules_orders">
+      <ColNames>id_vehicule</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefTableName>vehicules</RefTableName>
+    </foreign-key>
+    <index id="351" parent="307" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="367" parent="305" name="fk_orders_receipts">
-      <ColNames>id_order</ColNames>
-      <Type>btree</Type>
-    </index>
-    <index id="368" parent="305" name="fk_customers_receipts">
+    <index id="352" parent="307" name="fk_customers_orders">
       <ColNames>id_customer</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="369" parent="305" name="PRIMARY">
+    <index id="353" parent="307" name="fk_pizzas_orders">
+      <ColNames>id_pizza</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="354" parent="307" name="fk_sizes_orders">
+      <ColNames>id_size</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="355" parent="307" name="fk_delivers_orders">
+      <ColNames>id_deliver</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="356" parent="307" name="fk_vehicules_orders">
+      <ColNames>id_vehicule</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="357" parent="307" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="370" parent="306" name="id">
+    <column id="358" parent="308" name="id_pizza_ingredients">
       <AutoIncrement>1</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <index id="371" parent="306" name="PRIMARY">
+    <column id="359" parent="308" name="id_pizza">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="360" parent="308" name="id_ingredient">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <foreign-key id="361" parent="308" name="fk_pizzas_pizza_ingredients">
+      <ColNames>id_pizza</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefTableName>pizzas</RefTableName>
+    </foreign-key>
+    <foreign-key id="362" parent="308" name="fk_ingredients_pizza_ingredients">
+      <ColNames>id_ingredient</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefTableName>ingredients</RefTableName>
+    </foreign-key>
+    <index id="363" parent="308" name="PRIMARY">
+      <ColNames>id_pizza_ingredients</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="364" parent="308" name="fk_pizzas_pizza_ingredients">
+      <ColNames>id_pizza</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="365" parent="308" name="fk_ingredients_pizza_ingredients">
+      <ColNames>id_ingredient</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="366" parent="308" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="367" parent="309" name="id">
+      <AutoIncrement>1</AutoIncrement>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="368" parent="309" name="name">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>varchar(50)|0s</StoredType>
+    </column>
+    <column id="369" parent="309" name="price">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <index id="370" parent="309" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="372" parent="306" name="PRIMARY">
+    <key id="371" parent="309" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="372" parent="310" name="id">
+      <AutoIncrement>1</AutoIncrement>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="373" parent="310" name="id_order">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="374" parent="310" name="id_customer">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="375" parent="310" name="final_price">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <foreign-key id="376" parent="310" name="fk_orders_receipts">
+      <ColNames>id_order</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefTableName>orders</RefTableName>
+    </foreign-key>
+    <foreign-key id="377" parent="310" name="fk_customers_receipts">
+      <ColNames>id_customer</ColNames>
+      <OnDelete>cascade</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefTableName>customers</RefTableName>
+    </foreign-key>
+    <index id="378" parent="310" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="379" parent="310" name="fk_orders_receipts">
+      <ColNames>id_order</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="380" parent="310" name="fk_customers_receipts">
+      <ColNames>id_customer</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="381" parent="310" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="382" parent="311" name="id">
+      <AutoIncrement>1</AutoIncrement>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="383" parent="311" name="brand">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>varchar(50)|0s</StoredType>
+    </column>
+    <column id="384" parent="311" name="model">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>varchar(50)|0s</StoredType>
+    </column>
+    <index id="385" parent="311" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="386" parent="311" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>

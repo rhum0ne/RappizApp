@@ -55,12 +55,18 @@ CREATE TABLE orders(
 
 CREATE TABLE delivers(
                          id INT NOT NULL AUTO_INCREMENT,
-                         name VARCHAR(50) NOT NULL,
+                         first_name VARCHAR(50) NOT NULL,
+                         last_name VARCHAR(50) NOT NULL,
+                         email VARCHAR(50) NOT NULL,
+                         password VARCHAR(50) NOT NULL,
+                         id_vehicule INT NOT NULL,
                          PRIMARY KEY(id)
 );
 
 CREATE TABLE vehicules(
                           id INT NOT NULL AUTO_INCREMENT,
+                          brand VARCHAR(50) NOT NULL,
+                          model VARCHAR(50) NOT NULL,
                           PRIMARY KEY(id)
 );
 
@@ -135,4 +141,11 @@ ALTER TABLE receipts
         FOREIGN KEY (id_customer)
             REFERENCES customers(id)
             ON UPDATE CASCADE
-            ON DELETE CASCADE;;
+            ON DELETE CASCADE;
+
+ALTER TABLE delivers
+    ADD CONSTRAINT fk_vehicules_delivers
+        FOREIGN KEY (id_vehicule)
+            REFERENCES vehicules(id)
+            ON UPDATE CASCADE
+            ON DELETE CASCADE;
