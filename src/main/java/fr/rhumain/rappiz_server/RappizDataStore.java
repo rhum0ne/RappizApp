@@ -135,15 +135,15 @@ public class RappizDataStore {
     }
 
     private void seedData() {
-        Ingredient tomate = new Ingredient("Sauce tomate");
-        Ingredient creme = new Ingredient("Crème fraiche");
-        Ingredient mozzarella = new Ingredient("Mozzarella");
-        Ingredient jambon = new Ingredient("Jambon");
-        Ingredient champignon = new Ingredient("Champignon");
-        Ingredient chevre = new Ingredient("Fromage de chèvre");
-        Ingredient miel = new Ingredient("Miel");
-        Ingredient chorizo = new Ingredient("Chorizo");
-        Ingredient poivron = new Ingredient("Poivron");
+        Ingredient tomate = new Ingredient(1, "Sauce tomate");
+        Ingredient creme = new Ingredient(2, "Crème fraiche");
+        Ingredient mozzarella = new Ingredient(3, "Mozzarella");
+        Ingredient jambon = new Ingredient(4, "Jambon");
+        Ingredient champignon = new Ingredient(5, "Champignon");
+        Ingredient chevre = new Ingredient(6, "Fromage de chèvre");
+        Ingredient miel = new Ingredient(7, "Miel");
+        Ingredient chorizo = new Ingredient(8, "Chorizo");
+        Ingredient poivron = new Ingredient(9, "Poivron");
 
         Pizza margherita = new Pizza("Margherita", 12, new Ingredient[]{tomate, mozzarella});
         Pizza reine = new Pizza("Reine", 14, new Ingredient[]{tomate, mozzarella, jambon, champignon});
@@ -158,9 +158,9 @@ public class RappizDataStore {
         formats.addAll(List.of(naine, humaine, ogresse));
 
         users.addAll(List.of(
-                new User(1, "Jean", "Dupont", "jean.dupont@rappiz.fr", "rappiz"),
-                new User(2, "Sarah", "Martin", "sarah.martin@rappiz.fr", "rappiz"),
-                new User(3, "Yanis", "Petit", "yanis.petit@rappiz.fr", "rappiz")
+                new User(1, "Jean", "Dupont", "jean.dupont@rappiz.fr", "rappiz", 5000),
+                new User(2, "Sarah", "Martin", "sarah.martin@rappiz.fr", "rappiz", 2750),
+                new User(3, "Yanis", "Petit", "yanis.petit@rappiz.fr", "rappiz", 230)
         ));
         customerBalances.put(1, 55);
         customerBalances.put(2, 18);

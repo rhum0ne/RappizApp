@@ -34,7 +34,13 @@ public class PizzasSeeder implements DataSeeder {
 
     @Override
     public boolean isAlreadySeeded() throws DAOException {
-        return false;
+        String sql = "SELECT COUNT(*) FROM pizzas";
+        try(Statement stm = ConnectionManager.getConnection().createStatement();
+            ResultSet rq = stm.executeQuery(sql)) {
+            return rq.next() && rq.getInt(1) > 0;
+        } catch (SQLException e) {
+            throw new DAOException("Impossible to verify pizzas", e);
+        }
     }
 
     @Override
