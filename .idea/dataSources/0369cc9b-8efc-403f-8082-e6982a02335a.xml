@@ -932,7 +932,7 @@
       <AutoIntrospectionLevel>3</AutoIntrospectionLevel>
       <Current>1</Current>
       <LastIntrospectionLevel>3</LastIntrospectionLevel>
-      <LastIntrospectionLocalTimestamp>2026-06-02.15:42:23</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2026-06-02.19:53:46</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <schema id="296" parent="1" name="sys">
@@ -1122,7 +1122,7 @@
       <Position>3</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="334" parent="306" name="id_size">
+    <column id="334" parent="306" name="id_format">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>int|0s</StoredType>
@@ -1167,7 +1167,7 @@
       <RefTableName>pizzas</RefTableName>
     </foreign-key>
     <foreign-key id="342" parent="306" name="fk_sizes_orders">
-      <ColNames>id_size</ColNames>
+      <ColNames>id_format</ColNames>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
       <RefColNames>id</RefColNames>
@@ -1201,7 +1201,7 @@
       <Type>btree</Type>
     </index>
     <index id="348" parent="306" name="fk_sizes_orders">
-      <ColNames>id_size</ColNames>
+      <ColNames>id_format</ColNames>
       <Type>btree</Type>
     </index>
     <index id="349" parent="306" name="fk_delivers_orders">

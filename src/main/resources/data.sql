@@ -46,7 +46,7 @@ CREATE TABLE orders(
                        id INT NOT NULL AUTO_INCREMENT,
                        id_user INT NOT NULL,
                        id_pizza INT NOT NULL,
-                       id_size INT NOT NULL,
+                       id_format INT NOT NULL,
                        timestamp_order DATETIME NOT NULL,
                        timestamp_deliver DATETIME NOT NULL,
                        final_price INT NOT NULL,
@@ -126,7 +126,7 @@ ALTER TABLE orders
 
 ALTER TABLE orders
     ADD CONSTRAINT fk_sizes_orders
-        FOREIGN KEY (id_size)
+        FOREIGN KEY (id_format)
             REFERENCES formats(id)
             ON UPDATE CASCADE
             ON DELETE CASCADE;;
