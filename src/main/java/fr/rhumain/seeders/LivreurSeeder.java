@@ -15,19 +15,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import static fr.rhumain.seeders.references.VehiculeReference.*;
-
 public class LivreurSeeder implements DataSeeder {
-    private final VehiculeDAO vehiculeDAO;
 
-    public LivreurSeeder(VehiculeDAO vehiculeDAO) {
-        this.vehiculeDAO = vehiculeDAO;
-    }
+    public LivreurSeeder() {}
 
     private static final List<LivreurDefinition> LIVREURS = List.of(
-        new LivreurDefinition("Marc", "Lefèvre", "marc.lefevre@rappiz.fr", "rappiz", SCOOTER),
-        new LivreurDefinition("Nora", "Bailly", "nora.bailly@rappiz.fr", "rappiz", VELO),
-        new LivreurDefinition("Hugo", "Bernard", "hugo.bernard@rappiz.fr", "rappiz", VOITURE)
+        new LivreurDefinition("Marc", "Lefèvre", "marc.lefevre@rappiz.fr", "rappiz"),
+        new LivreurDefinition("Nora", "Bailly", "nora.bailly@rappiz.fr", "rappiz"),
+        new LivreurDefinition("Hugo", "Bernard", "hugo.bernard@rappiz.fr", "rappiz")
     );
 
     @Override
@@ -53,18 +48,13 @@ public class LivreurSeeder implements DataSeeder {
 
     @Override
     public void seed() throws DAOException, SQLException {
-        String sql = "INSERT INTO delivers (first_name, last_name, email, password, id_vehicule) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO delivers (first_name, last_name, email, password) VALUES (?, ?, ?, ?)";
         try(PreparedStatement stm = ConnectionManager.getConnection().prepareStatement(sql)) {
             for(LivreurDefinition livreurDef : LIVREURS) {
-                Vehicule vehicule = this.vehiculeDAO.findByBrandAndModel(
-                    livreurDef.vehicule().getBrand(),
-                    livreurDef.vehicule().getModel()
-                ).orElseThrow(() -> new DAOException("Vehicule not found for livreur " + livreurDef.firstName()));
                 stm.setString(1, livreurDef.firstName());
                 stm.setString(2, livreurDef.lastName());
                 stm.setString(3, livreurDef.email());
                 stm.setString(4, livreurDef.password());
-                stm.setInt(5, vehicule.id());
                 stm.addBatch();
             }
             stm.executeBatch();

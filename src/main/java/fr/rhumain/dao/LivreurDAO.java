@@ -12,24 +12,21 @@ import java.util.Optional;
 public class LivreurDAO implements DAO<Livreur, Integer> {
 
     private static final String SQL_FIND_BY_ID =
-            "SELECT d.*, v.brand, v.model FROM delivers d " +
-                    "LEFT JOIN vehicules v ON d.id_vehicule = v.id WHERE d.id=?";
+            "SELECT * FROM delivers WHERE id=?";
 
     private static final String SQL_FIND_ALL =
-            "SELECT d.*, v.brand, v.model FROM delivers d " +
-                    "LEFT JOIN vehicules v ON d.id_vehicule = v.id";
+            "SELECT * FROM delivers";
 
     private static final String SQL_INSERT =
-            "INSERT INTO delivers (first_name, last_name, email, password, id_vehicule) VALUES (?, ?, ?, ?, ?)";
+            "INSERT INTO delivers (first_name, last_name, email, password) VALUES (?, ?, ?, ?)";
 
     private static final String SQL_UPDATE =
-            "UPDATE delivers SET first_name=?, last_name=?, email=?, password=?, id_vehicule=? WHERE id=?";
+            "UPDATE delivers SET first_name=?, last_name=?, email=?, password=? WHERE id=?";
 
     private static final String SQL_DELETE = "DELETE FROM delivers WHERE id=?";
 
     private static final String SQL_FIND_BY_EMAIL =
-            "SELECT d.*, v.brand, v.model FROM delivers d " +
-                    "LEFT JOIN vehicules v ON d.id_vehicule = v.id WHERE d.email=?";
+            "SELECT * FROM delivers WHERE email=?";
 
     @Override
     public Optional<Livreur> findById(Integer id) throws DAOException {
@@ -64,16 +61,11 @@ public class LivreurDAO implements DAO<Livreur, Integer> {
             stm.setString(2, entity.lastName());
             stm.setString(3, entity.email());
             stm.setString(4, entity.password());
-            if (entity.vehicule() != null) {
-                stm.setInt(5, entity.vehicule().id());
-            } else {
-                stm.setNull(5, Types.INTEGER);
-            }
             stm.executeUpdate();
             try (ResultSet keys = stm.getGeneratedKeys()) {
                 if (keys.next()) {
                     return new Livreur(keys.getInt(1), entity.firstName(), entity.lastName(),
-                            entity.email(), entity.password(), entity.vehicule());
+                            entity.email(), entity.password());
                 }
                 throw new DAOException("[LivreurDAO] No generated key returned when saving livreur");
             }
@@ -92,12 +84,7 @@ public class LivreurDAO implements DAO<Livreur, Integer> {
             stm.setString(2, entity.lastName());
             stm.setString(3, entity.email());
             stm.setString(4, entity.password());
-            if (entity.vehicule() != null) {
-                stm.setInt(5, entity.vehicule().id());
-            } else {
-                stm.setNull(5, Types.INTEGER);
-            }
-            stm.setInt(6, entity.id());
+            stm.setInt(5, entity.id());
             int rows = stm.executeUpdate();
             if (rows == 0) {
                 throw new DAOException("[LivreurDAO] No livreur found with id " + entity.id());
@@ -132,18 +119,12 @@ public class LivreurDAO implements DAO<Livreur, Integer> {
     }
 
     private Livreur mapRow(ResultSet rs) throws SQLException {
-        Vehicule vehicule = null;
-        int idVehicule = rs.getInt("id_vehicule");
-        if (!rs.wasNull()) {
-            vehicule = new Vehicule(idVehicule, rs.getString("brand"), rs.getString("model"));
-        }
         return new Livreur(
                 rs.getInt("id"),
                 rs.getString("first_name"),
                 rs.getString("last_name"),
                 rs.getString("email"),
-                rs.getString("password"),
-                vehicule
+                rs.getString("password")
         );
     }
 }

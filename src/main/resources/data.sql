@@ -61,7 +61,6 @@ CREATE TABLE delivers(
                          last_name VARCHAR(50) NOT NULL,
                          email VARCHAR(50) NOT NULL,
                          password VARCHAR(50) NOT NULL,
-                         id_vehicule INT NOT NULL,
                          PRIMARY KEY(id)
 );
 
@@ -142,12 +141,5 @@ ALTER TABLE receipts
     ADD CONSTRAINT fk_customers_receipts
         FOREIGN KEY (id_user)
             REFERENCES users(id)
-            ON UPDATE CASCADE
-            ON DELETE CASCADE;
-
-ALTER TABLE delivers
-    ADD CONSTRAINT fk_vehicules_delivers
-        FOREIGN KEY (id_vehicule)
-            REFERENCES vehicules(id)
             ON UPDATE CASCADE
             ON DELETE CASCADE;
