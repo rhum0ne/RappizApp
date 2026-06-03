@@ -1,7 +1,6 @@
 package fr.rhumain.dao;
 
 import fr.rhumain.exceptions.DAOException;
-import fr.rhumain.structs.Order;
 import fr.rhumain.structs.Receipt;
 import fr.rhumain.structs.User;
 
@@ -158,10 +157,10 @@ public class ReceiptDAO implements DAO<Receipt, Integer> {
                 rs.getInt("balance")
         );
         // Order chargé en mode léger (id uniquement) — utiliser OrderDAO pour la version complète
-        Order order = new Order(rs.getInt("id_order"), null, null, 0, null, null, 0, null, null);
+//        Order order = new Order(rs.getInt("id_order"), null, null, 0, null, null, 0, null, null);
         return new Receipt(
                 rs.getInt("id"),
-                order.id(),
+                rs.getInt("id_order"),
                 user.id(),
                 rs.getInt("final_price")
         );

@@ -14,11 +14,13 @@ public class OrderDAO implements DAO<Order, Integer> {
             "SELECT o.*, " +
                     "u.first_name as u_first_name, u.last_name as u_last_name, u.email as u_email, u.password as u_password, u.balance, " +
                     "p.name as pizza_name, p.price as pizza_price," +
+                    "f.name as format_name, f.percentage as format_percentage, " +
                     "d.first_name as d_first_name, d.last_name as d_last_name, d.email as d_email, d.password as d_password, " +
                     "v.brand, v.model " +
                     "FROM orders o " +
                     "JOIN users u ON o.id_user = u.id " +
                     "JOIN pizzas p ON o.id_pizza = p.id " +
+                    "JOIN formats f On o.id_format=f.id " +
                     "LEFT JOIN delivers d ON o.id_deliver = d.id " +
                     "LEFT JOIN vehicules v ON o.id_vehicule = v.id " +
                     "WHERE o.id=?";
@@ -26,12 +28,14 @@ public class OrderDAO implements DAO<Order, Integer> {
     private static final String SQL_FIND_ALL =
             "SELECT o.*, " +
                     "u.first_name as u_first_name, u.last_name as u_last_name, u.email as u_email, u.password as u_password, u.balance, " +
-                    "p.name as pizza_name, " +
+                    "p.name as pizza_name, p.price as pizza_price, " +
+                    "f.name as format_name, f.percentage as format_percentage, " +
                     "d.first_name as d_first_name, d.last_name as d_last_name, d.email as d_email, d.password as d_password, " +
                     "v.brand, v.model " +
                     "FROM orders o " +
                     "JOIN users u ON o.id_user = u.id " +
                     "JOIN pizzas p ON o.id_pizza = p.id " +
+                    "JOIN formats f On o.id_format=f.id " +
                     "LEFT JOIN delivers d ON o.id_deliver = d.id " +
                     "LEFT JOIN vehicules v ON o.id_vehicule = v.id";
 
@@ -80,8 +84,8 @@ public class OrderDAO implements DAO<Order, Integer> {
             stm.setInt(1, entity.User().id());
             stm.setInt(2, entity.pizza().id());
             stm.setInt(3, entity.format().id());
-            stm.setTimestamp(4, entity.timeStamp());
-            stm.setTimestamp(5, entity.timeStampLivraison());
+            stm.setTimestamp(4, Timestamp.valueOf(entity.timeStamp()));
+            stm.setTimestamp(5, Timestamp.valueOf(entity.timeStampLivraison()));
             stm.setDouble(6, entity.price());
             if (entity.livreur() != null) {
                 stm.setInt(7, entity.livreur().id());
@@ -116,8 +120,8 @@ public class OrderDAO implements DAO<Order, Integer> {
             stm.setInt(1, entity.User().id());
             stm.setInt(2, entity.pizza().id());
             stm.setInt(3, entity.format().id());
-            stm.setTimestamp(4, entity.timeStamp());
-            stm.setTimestamp(5, entity.timeStampLivraison());
+            stm.setTimestamp(4, Timestamp.valueOf(entity.timeStamp()));
+            stm.setTimestamp(5, Timestamp.valueOf(entity.timeStampLivraison()));
             stm.setDouble(6, entity.price());
             if (entity.livreur() != null) {
                 stm.setInt(7, entity.livreur().id());
@@ -177,8 +181,8 @@ public class OrderDAO implements DAO<Order, Integer> {
                 rs.getInt("balance")
         );
         // Pizza sans ingrédients ici (chargement léger) — utiliser PizzaDAO.findById pour la version complète
-        Pizza pizza = new Pizza(rs.getInt("id_pizza"), rs.getString("pizza_name"), List.of());
-
+        Pizza pizza = new Pizza(rs.getInt("id_pizza"), rs.getString("pizza_name"), rs.getInt("pizza_price"), new Ingredient[] {});
+        Format format = new Format(rs.getInt("id_format"), rs.getString("format_name"), rs.getInt("format_percentage"));
         Livreur livreur = null;
         int idDeliver = rs.getInt("id_deliver");
         if (!rs.wasNull()) {
@@ -201,9 +205,9 @@ public class OrderDAO implements DAO<Order, Integer> {
                 rs.getInt("id"),
                 user,
                 pizza,
-                rs.getInt("id_format"),
-                rs.getTimestamp("timestamp_order"),
-                rs.getTimestamp("timestamp_deliver"),
+                format,
+                rs.getTimestamp("timestamp_order").toLocalDateTime(),
+                rs.getTimestamp("timestamp_deliver").toLocalDateTime(),
                 rs.getInt("final_price"),
                 livreur,
                 vehicule
