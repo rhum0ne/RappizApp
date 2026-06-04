@@ -61,7 +61,7 @@ public class VehiculeDAO implements DAO<Vehicule, Integer> {
             stm.executeUpdate();
             try(ResultSet keys = stm.getGeneratedKeys()) {
                 if(keys.next()) {
-                    return new Vehicule(keys.getInt("id"), entity.brand(), entity.model());
+                    return new Vehicule(keys.getInt(1), entity.brand(), entity.model());
                 }
                 throw new DAOException("[VehiculeDAO] No generated key returned when saving vehicule");
             }

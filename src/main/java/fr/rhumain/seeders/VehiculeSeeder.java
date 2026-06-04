@@ -2,9 +2,7 @@ package fr.rhumain.seeders;
 
 import fr.rhumain.dao.ConnectionManager;
 import fr.rhumain.exceptions.DAOException;
-import fr.rhumain.seeders.references.IngredientName;
 import fr.rhumain.seeders.references.VehiculeReference;
-import fr.rhumain.structs.Vehicule;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

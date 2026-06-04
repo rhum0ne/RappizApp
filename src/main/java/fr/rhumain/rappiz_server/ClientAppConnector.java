@@ -1,92 +1,165 @@
 package fr.rhumain.rappiz_server;
 
+import fr.rhumain.dao.FormatDAO;
+import fr.rhumain.dao.OrderDAO;
+import fr.rhumain.dao.PizzaDAO;
+import fr.rhumain.dao.ReceiptDAO;
+import fr.rhumain.dao.UserDAO;
+import fr.rhumain.exceptions.DAOException;
 import fr.rhumain.structs.*;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 public class ClientAppConnector {
 
-    private final RappizDataStore dataStore;
+    private final PizzaDAO pizzaDAO;
+    private final FormatDAO formatDAO;
+    private final UserDAO userDAO;
+    private final OrderDAO orderDAO;
+    private final ReceiptDAO receiptDAO;
 
     public ClientAppConnector() {
-        this(new RappizDataStore());
+        this(new PizzaDAO(), new FormatDAO(), new UserDAO(), new OrderDAO(), new ReceiptDAO());
     }
 
-    public ClientAppConnector(RappizDataStore dataStore) {
-        this.dataStore = dataStore;
+    public ClientAppConnector(PizzaDAO pizzaDAO, FormatDAO formatDAO, UserDAO userDAO, OrderDAO orderDAO, ReceiptDAO receiptDAO) {
+        this.pizzaDAO = pizzaDAO;
+        this.formatDAO = formatDAO;
+        this.userDAO = userDAO;
+        this.orderDAO = orderDAO;
+        this.receiptDAO = receiptDAO;
     }
 
     /**
      * Récupère la liste des pizzas disponibles au menu.
      */
     public List<Pizza> getPizzas() {
-        return dataStore.getPizzas();
+        try {
+            return pizzaDAO.findAll();
+        } catch (DAOException e) {
+            logDaoError(e);
+            return Collections.emptyList();
+        }
     }
 
     /**
      * Récupère les formats disponibles pour composer une commande.
      */
     public List<Format> getFormats() {
-        return dataStore.getFormats();
+        try {
+            return formatDAO.findAll();
+        } catch (DAOException e) {
+            logDaoError(e);
+            return Collections.emptyList();
+        }
     }
 
     /**
      * Simule la création d'une commande depuis l'application cliente.
      */
     public boolean createOrder(int idUser, Pizza pizza, Format format) {
-        Order order = dataStore.createOrder(idUser, pizza, format);
-        if (order == null) {
+        try {
+            User user = userDAO.findById(idUser).orElse(null);
+            if (user == null) {
+                return false;
+            }
+
+            int paidPizzaCount = getBoughtPizzaCount(user.id());
+            boolean loyaltyFreePizza = paidPizzaCount > 0 && (paidPizzaCount + 1) % 10 == 0;
+            int price = loyaltyFreePizza ? 0 : calculatePrice(pizza, format);
+            if (user.balance() < price) {
+                System.out.println("Commande refusée pour le client #" + idUser + " : solde insuffisant");
+                return false;
+            }
+
+            Order order = orderDAO.save(new Order(
+                    null,
+                    user,
+                    pizza,
+                    format,
+                    LocalDateTime.now(),
+                    null,
+                    price,
+                    null,
+                    null
+            ));
+            receiptDAO.save(new Receipt(null, order.id(), order.price(), user.id()));
+            userDAO.updateBalance(user.id(), user.balance() - price);
+            System.out.println("Nouvelle commande #" + order.id() + " créée pour le client #" + idUser);
+            return true;
+        } catch (DAOException e) {
+            logDaoError(e);
             System.out.println("Commande refusée pour le client #" + idUser + " : solde insuffisant");
             return false;
         }
-        System.out.println("Nouvelle commande #" + order.id() + " créée pour le client #" + idUser);
-        return true;
     }
 
     public int calculatePrice(Pizza pizza, Format format) {
-        return dataStore.calculatePrice(pizza, format);
+        return (pizza.price() * format.pricePercetage()) / 100;
     }
 
     public int getCustomerBalance(int idUser) {
-        return dataStore.getCustomerBalance(idUser);
+        User user = getUserById(idUser);
+        return user != null ? user.balance() : 0;
     }
 
     public int getBoughtPizzaCount(int idUser) {
-        return dataStore.getBoughtPizzaCount(idUser);
+        return (int) getOrdersByUserId(idUser).stream()
+                .filter(order -> order.price() > 0)
+                .count();
     }
 
     public Optional<User> authenticateUser(String email, String password) {
-        return dataStore.authenticateUser(email, password);
+        try {
+            return userDAO.findByEmail(email)
+                    .filter(user -> user.password().equals(password));
+        } catch (DAOException e) {
+            logDaoError(e);
+            return Optional.empty();
+        }
     }
 
     /**
      * Récupère les informations basiques du client depuis son ID.
      */
     public User getUserById(int idUser) {
-        return dataStore.findUserById(idUser).orElse(null);
+        try {
+            return userDAO.findById(idUser).orElse(null);
+        } catch (DAOException e) {
+            logDaoError(e);
+            return null;
+        }
     }
 
     /**
      * Récupère l'historique ou les commandes en cours d'un client.
      */
     public List<Order> getOrdersByUserId(int idUser) {
-        return dataStore.getOrders()
-                .stream()
-                .filter(order -> order.idUser() == idUser)
-                .sorted(Comparator.comparingInt(Order::id).reversed())
-                .toList();
+        try {
+            return orderDAO.findByUser(idUser)
+                    .stream()
+                    .sorted(Comparator.comparingInt(Order::id).reversed())
+                    .toList();
+        } catch (DAOException e) {
+            logDaoError(e);
+            return Collections.emptyList();
+        }
     }
 
     /**
      * Récupère la liste des reçus / factures associés à l'utilisateur.
      */
     public List<Receipt> getReceiptsByUserId(int idUser) {
-        return dataStore.getReceipts()
-                .stream()
-                .filter(receipt -> receipt.idUser() == idUser)
-                .toList();
+        try {
+            return receiptDAO.findByUser(idUser);
+        } catch (DAOException e) {
+            logDaoError(e);
+            return Collections.emptyList();
+        }
     }
 
     /**
@@ -98,5 +171,9 @@ public class ClientAppConnector {
                 .filter(order -> order.timeStampLivraison() == null)
                 .findFirst()
                 .orElse(null);
+    }
+
+    private void logDaoError(DAOException e) {
+        System.err.println("[ClientAppConnector] " + e.getMessage());
     }
 }

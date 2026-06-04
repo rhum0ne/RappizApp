@@ -10,7 +10,7 @@ import javax.swing.*;
 
 public class Main {
 
-    static void main(String[] args) {
+    public static void main(String[] args) {
         System.out.println("=== DEBUG CLASSPATH ===");
         System.out.println("Working dir : " + System.getProperty("user.dir"));
         System.out.println("Classpath   : " + System.getProperty("java.class.path"));

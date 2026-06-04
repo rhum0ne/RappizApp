@@ -32,7 +32,7 @@ public class SeederRunner {
         } catch (DAOException e) {
             System.out.println("[Seeder] " + seeder.getName() + " : error while seeding " + e.getMessage());
         } catch (SQLException e) {
-
+            System.out.println("[Seeder] " + seeder.getName() + " : SQL error while seeding " + e.getMessage());
         }
     }
 }

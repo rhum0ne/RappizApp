@@ -2,6 +2,7 @@ package fr.rhumain.dashboard_app;
 
 import fr.rhumain.rappiz_server.DashboardAppConnector;
 import fr.rhumain.structs.Ingredient;
+import fr.rhumain.structs.Livreur;
 import fr.rhumain.structs.Order;
 import fr.rhumain.structs.Pizza;
 import fr.rhumain.structs.User;
@@ -13,19 +14,14 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class DashboardApp extends JFrame {
-
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private final DashboardAppConnector server;
     private final JTable ordersTable;
@@ -43,6 +39,8 @@ public class DashboardApp extends JFrame {
     private final JLabel averageOrdersValue;
     private final JLabel clientsAboveAverageValue;
     private final JLabel ordersByClientValue;
+    private final JComboBox<Livreur> livreurComboBox;
+    private final JComboBox<Vehicule> vehiculeComboBox;
 
     public DashboardApp(DashboardAppConnector server) {
         this.server = server;
@@ -128,14 +126,27 @@ public class DashboardApp extends JFrame {
         bottomPanel.setBackground(AppTheme.BACKGROUND);
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
 
+        livreurComboBox = new JComboBox<>();
+        vehiculeComboBox = new JComboBox<>();
+        configureLivreurComboBox();
+        configureVehiculeComboBox();
+        loadDeliveryOptions();
+
         JButton refreshButton = new JButton("Rafraîchir les données");
         AppTheme.styleSecondaryButton(refreshButton);
-        refreshButton.addActionListener(e -> loadOrdersIntoTable());
+        refreshButton.addActionListener(e -> {
+            loadDeliveryOptions();
+            loadOrdersIntoTable();
+        });
 
         JButton deliverButton = new JButton("Marquer comme livrée");
         AppTheme.stylePrimaryButton(deliverButton);
         deliverButton.addActionListener(e -> markSelectedOrderDelivered());
 
+        bottomPanel.add(new JLabel("Livreur :"));
+        bottomPanel.add(livreurComboBox);
+        bottomPanel.add(new JLabel("Véhicule :"));
+        bottomPanel.add(vehiculeComboBox);
         bottomPanel.add(refreshButton);
         bottomPanel.add(deliverButton);
         this.add(bottomPanel, BorderLayout.SOUTH);
@@ -197,6 +208,54 @@ public class DashboardApp extends JFrame {
         return label;
     }
 
+    private void configureLivreurComboBox() {
+        livreurComboBox.setFont(AppTheme.BODY_FONT);
+        livreurComboBox.setPreferredSize(new Dimension(180, 36));
+        livreurComboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Livreur livreur) {
+                    setText(livreur.firstName() + " " + livreur.lastName());
+                } else {
+                    setText("Choisir un livreur");
+                }
+                return component;
+            }
+        });
+    }
+
+    private void configureVehiculeComboBox() {
+        vehiculeComboBox.setFont(AppTheme.BODY_FONT);
+        vehiculeComboBox.setPreferredSize(new Dimension(190, 36));
+        vehiculeComboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Vehicule vehicule) {
+                    setText(vehicule.brand() + " " + vehicule.model());
+                } else {
+                    setText("Choisir un véhicule");
+                }
+                return component;
+            }
+        });
+    }
+
+    private void loadDeliveryOptions() {
+        livreurComboBox.removeAllItems();
+        livreurComboBox.addItem(null);
+        for (Livreur livreur : server.getAllLivreurs()) {
+            livreurComboBox.addItem(livreur);
+        }
+
+        vehiculeComboBox.removeAllItems();
+        vehiculeComboBox.addItem(null);
+        for (Vehicule vehicule : server.getAllVehicules()) {
+            vehiculeComboBox.addItem(vehicule);
+        }
+    }
+
     /**
      * Méthode qui récupère les commandes depuis le connecteur et peuple le tableau.
      */
@@ -215,7 +274,7 @@ public class DashboardApp extends JFrame {
             String livreurName = getDeliveryPerson(order);
             String vehicleName = getVehicleName(order);
             String vehicleType = getVehicleType(order.vehicule());
-            String clientName = getClientName(order.idUser());
+            String clientName = getClientName(order.User() != null ? order.User().id() : null);
             String statut = getStatus(order);
 
             // Création de la ligne
@@ -255,7 +314,8 @@ public class DashboardApp extends JFrame {
     private void refreshStatistics(List<Order> orders) {
         List<User> users = server.getAllUsers();
         Map<Integer, Long> ordersByClient = orders.stream()
-                .collect(Collectors.groupingBy(Order::idUser, Collectors.counting()));
+                .filter(order -> order.User() != null)
+                .collect(Collectors.groupingBy(order -> order.User().id(), Collectors.counting()));
 
         bestCustomerValue.setText(ordersByClient.entrySet().stream()
                 .max(Map.Entry.comparingByValue())
@@ -302,13 +362,7 @@ public class DashboardApp extends JFrame {
                 .map(order -> getDeliveryPerson(order) + " (" + lateDeliveriesByLivreur.get(getDeliveryPerson(order)) + ", " + getVehicleName(order) + ")")
                 .orElse("Aucun"));
 
-        Set<Integer> usedVehicleIds = orders.stream()
-                .map(Order::vehicule)
-                .filter(vehicle -> vehicle != null)
-                .map(Vehicule::id)
-                .collect(Collectors.toSet());
-        unusedVehiclesValue.setText(server.getAllVehicules().stream()
-                .filter(vehicle -> !usedVehicleIds.contains(vehicle.id()))
+        unusedVehiclesValue.setText(server.getUnusedVehicules().stream()
                 .map(vehicle -> vehicle.brand() + " " + vehicle.model())
                 .collect(Collectors.joining(", ")));
         if (unusedVehiclesValue.getText().isEmpty()) {
@@ -328,14 +382,26 @@ public class DashboardApp extends JFrame {
             return;
         }
 
+        Livreur selectedLivreur = (Livreur) livreurComboBox.getSelectedItem();
+        Vehicule selectedVehicule = (Vehicule) vehiculeComboBox.getSelectedItem();
+        if (selectedLivreur == null || selectedVehicule == null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Choisissez un livreur et un véhicule avant de marquer la commande comme livrée.",
+                    "Livreur ou véhicule manquant",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
         String rawOrderId = tableModel.getValueAt(selectedRow, 0).toString().replace("#", "");
         int orderId = Integer.parseInt(rawOrderId);
-        boolean updated = server.markOrderDelivered(orderId);
+        boolean updated = server.markOrderDelivered(orderId, selectedLivreur.id(), selectedVehicule.id());
 
         if (!updated) {
             JOptionPane.showMessageDialog(
                     this,
-                    "Cette commande est déjà livrée ou introuvable.",
+                    "Cette commande est déjà livrée, introuvable, ou le livreur/véhicule choisi n'existe plus.",
                     "Action impossible",
                     JOptionPane.WARNING_MESSAGE
             );
@@ -422,9 +488,7 @@ public class DashboardApp extends JFrame {
         if (order.timeStampLivraison() == null) {
             return 0;
         }
-        LocalDateTime orderedAt = LocalDateTime.parse(order.timeStamp(), DATE_FORMATTER);
-        LocalDateTime deliveredAt = LocalDateTime.parse(order.timeStampLivraison(), DATE_FORMATTER);
-        return Duration.between(orderedAt, deliveredAt).toMinutes();
+        return Duration.between(order.timeStamp(), order.timeStampLivraison()).toMinutes();
     }
 
     private String findExtremeLabel(Map<String, Long> values, boolean max) {
@@ -434,7 +498,10 @@ public class DashboardApp extends JFrame {
                 .orElse("Aucun");
     }
 
-    private String getClientName(int idUser) {
+    private String getClientName(Integer idUser) {
+        if (idUser == null) {
+            return "Client inconnu";
+        }
         User user = server.getUserById(idUser);
         if (user == null) {
             return "Client #" + idUser;

@@ -12,9 +12,9 @@ import java.util.List;
 
 public class FormatSeeder implements DataSeeder {
     public static List<Format> FORMATS = List.of(
-            new Format("Naine", 67),
-            new Format("Humaine", 100),
-            new Format("Ogresse", 134)
+            new Format(null, "Naine", 67),
+            new Format(null, "Humaine", 100),
+            new Format(null, "Ogresse", 134)
     );
 
     @Override

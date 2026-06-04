@@ -8,6 +8,8 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 
 public final class AppTheme {
 
@@ -24,6 +26,10 @@ public final class AppTheme {
     public static final Font SECTION_FONT = new Font("Segoe UI", Font.BOLD, 16);
     public static final Font BODY_FONT = new Font("Segoe UI", Font.PLAIN, 14);
     public static final Font SMALL_FONT = new Font("Segoe UI", Font.PLAIN, 12);
+
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+            .appendPattern("dd MMM yyyy 'à' HH:mm")
+            .toFormatter();;
 
     private AppTheme() {
     }

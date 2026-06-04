@@ -155,8 +155,8 @@ public class HomeScreen extends JPanel {
         panel.add(createInfoLine("Pizza", pizzaName + " - " + formatName));
         panel.add(createInfoLine("Ingrédients", ingredients));
         panel.add(createInfoLine("Prix total", order.price() + " €"));
-        panel.add(createInfoLine("Commandée le", order.timeStamp()));
-        panel.add(createInfoLine("Livraison", order.timeStampLivraison() != null ? order.timeStampLivraison() : "En préparation"));
+        panel.add(createInfoLine("Commandée le", order.timeStamp().format(AppTheme.DATE_TIME_FORMATTER)));
+        panel.add(createInfoLine("Livraison", order.timeStampLivraison() != null ? order.timeStampLivraison().format(AppTheme.DATE_TIME_FORMATTER) : "En préparation"));
         panel.add(createInfoLine("Livreur", getDeliveryInfo(order)));
 
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));

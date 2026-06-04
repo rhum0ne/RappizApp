@@ -20,7 +20,7 @@ public class ConnectionManager {
     }
 
     private static void loadDriver(String driverClassName) throws SQLException {
-        if(!driverLoaded) return;
+        if(driverLoaded) return;
         try {
             Class.forName(driverClassName);
             driverLoaded = true;
@@ -50,7 +50,7 @@ public class ConnectionManager {
     public static synchronized void close() throws SQLException {
         if(connection != null) {
             try {
-                if(connection.isClosed()) {
+                if(!connection.isClosed()) {
                     connection.close();
                     System.out.println("[ConnectionManager] Connection closed " + connection);
                 }

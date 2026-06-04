@@ -1,24 +1,39 @@
 package fr.rhumain.dao;
 
+import fr.rhumain.exceptions.DAOException;
+import fr.rhumain.structs.Ingredient;
+import fr.rhumain.structs.Pizza;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 public class PizzaDAO implements DAO<Pizza, Integer> {
 
     // Jointure triple : pizzas → pizza_ingredients → ingredients
     private static final String SQL_FIND_BY_ID =
-            "SELECT p.id, p.name, i.id as ing_id, i.name as ing_name " +
+            "SELECT p.id, p.name, p.price, i.id as ing_id, i.name as ing_name " +
                     "FROM pizzas p " +
                     "LEFT JOIN pizza_ingredients pi ON p.id = pi.id_pizza " +
                     "LEFT JOIN ingredients i ON pi.id_ingredient = i.id " +
                     "WHERE p.id=?";
 
     private static final String SQL_FIND_ALL =
-            "SELECT p.id, p.name, i.id as ing_id, i.name as ing_name " +
+            "SELECT p.id, p.name, p.price, i.id as ing_id, i.name as ing_name " +
                     "FROM pizzas p " +
                     "LEFT JOIN pizza_ingredients pi ON p.id = pi.id_pizza " +
                     "LEFT JOIN ingredients i ON pi.id_ingredient = i.id " +
                     "ORDER BY p.id";
 
     private static final String SQL_INSERT_PIZZA =
-            "INSERT INTO pizzas (name) VALUES (?)";
+            "INSERT INTO pizzas (name, price) VALUES (?, ?)";
 
     private static final String SQL_INSERT_PIZZA_INGREDIENT =
             "INSERT INTO pizza_ingredients (id_pizza, id_ingredient) VALUES (?, ?)";
@@ -27,13 +42,13 @@ public class PizzaDAO implements DAO<Pizza, Integer> {
             "DELETE FROM pizza_ingredients WHERE id_pizza=?";
 
     private static final String SQL_UPDATE =
-            "UPDATE pizzas SET name=? WHERE id=?";
+            "UPDATE pizzas SET name=?, price=? WHERE id=?";
 
     private static final String SQL_DELETE =
             "DELETE FROM pizzas WHERE id=?";
 
     private static final String SQL_FIND_BY_NAME =
-            "SELECT p.id, p.name, i.id as ing_id, i.name as ing_name " +
+            "SELECT p.id, p.name, p.price, i.id as ing_id, i.name as ing_name " +
                     "FROM pizzas p " +
                     "LEFT JOIN pizza_ingredients pi ON p.id = pi.id_pizza " +
                     "LEFT JOIN ingredients i ON pi.id_ingredient = i.id " +
@@ -63,13 +78,15 @@ public class PizzaDAO implements DAO<Pizza, Integer> {
 
     @Override
     public Pizza save(Pizza entity) throws DAOException {
-        Connection conn = ConnectionManager.getConnection();
+        Connection conn = null;
         try {
+            conn = ConnectionManager.getConnection();
             conn.setAutoCommit(false);
 
             int newId;
             try (PreparedStatement stm = conn.prepareStatement(SQL_INSERT_PIZZA, Statement.RETURN_GENERATED_KEYS)) {
                 stm.setString(1, entity.name());
+                stm.setInt(2, entity.price());
                 stm.executeUpdate();
                 try (ResultSet keys = stm.getGeneratedKeys()) {
                     if (!keys.next()) {
@@ -81,7 +98,7 @@ public class PizzaDAO implements DAO<Pizza, Integer> {
 
             insertIngredients(conn, newId, entity.ingredients());
             conn.commit();
-            return new Pizza(newId, entity.name(), entity.ingredients());
+            return new Pizza(newId, entity.name(), entity.price(), entity.ingredients());
 
         } catch (SQLException e) {
             rollbackQuietly(conn);
@@ -96,13 +113,15 @@ public class PizzaDAO implements DAO<Pizza, Integer> {
         if (entity.id() == null) {
             throw new DAOException("[PizzaDAO] Impossible to update pizza with null id");
         }
-        Connection conn = ConnectionManager.getConnection();
+        Connection conn = null;
         try {
+            conn = ConnectionManager.getConnection();
             conn.setAutoCommit(false);
 
             try (PreparedStatement stm = conn.prepareStatement(SQL_UPDATE)) {
                 stm.setString(1, entity.name());
-                stm.setInt(2, entity.id());
+                stm.setInt(2, entity.price());
+                stm.setInt(3, entity.id());
                 int rows = stm.executeUpdate();
                 if (rows == 0) {
                     throw new DAOException("[PizzaDAO] No pizza found with id " + entity.id());
@@ -127,8 +146,9 @@ public class PizzaDAO implements DAO<Pizza, Integer> {
 
     @Override
     public void delete(Pizza entity) throws DAOException {
-        Connection conn = ConnectionManager.getConnection();
+        Connection conn = null;
         try {
+            conn = ConnectionManager.getConnection();
             conn.setAutoCommit(false);
 
             try (PreparedStatement stm = conn.prepareStatement(SQL_DELETE_PIZZA_INGREDIENTS)) {
@@ -176,7 +196,7 @@ public class PizzaDAO implements DAO<Pizza, Integer> {
             int pizzaId = rs.getInt("id");
 
             if (!pizzaMap.containsKey(pizzaId)) {
-                pizzaMap.put(pizzaId, new Pizza(pizzaId, rs.getString("name"), new ArrayList<>()));
+                pizzaMap.put(pizzaId, new Pizza(pizzaId, rs.getString("name"), rs.getInt("price"), new Ingredient[]{}));
                 ingredientMap.put(pizzaId, new ArrayList<>());
             }
 
@@ -189,12 +209,17 @@ public class PizzaDAO implements DAO<Pizza, Integer> {
         List<Pizza> result = new ArrayList<>();
         for (Map.Entry<Integer, Pizza> entry : pizzaMap.entrySet()) {
             Pizza p = entry.getValue();
-            result.add(new Pizza(p.id(), p.name(), ingredientMap.get(p.id())));
+            result.add(new Pizza(
+                    p.id(),
+                    p.name(),
+                    p.price(),
+                    ingredientMap.get(p.id()).toArray(new Ingredient[0])
+            ));
         }
         return result;
     }
 
-    private void insertIngredients(Connection conn, int pizzaId, List<Ingredient> ingredients) throws SQLException {
+    private void insertIngredients(Connection conn, int pizzaId, Ingredient[] ingredients) throws SQLException {
         try (PreparedStatement stm = conn.prepareStatement(SQL_INSERT_PIZZA_INGREDIENT)) {
             for (Ingredient ingredient : ingredients) {
                 stm.setInt(1, pizzaId);
@@ -206,10 +231,18 @@ public class PizzaDAO implements DAO<Pizza, Integer> {
     }
 
     private void rollbackQuietly(Connection conn) {
-        try { conn.rollback(); } catch (SQLException ignored) {}
+        try {
+            if (conn != null) {
+                conn.rollback();
+            }
+        } catch (SQLException ignored) {}
     }
 
     private void resetAutoCommit(Connection conn) {
-        try { conn.setAutoCommit(true); } catch (SQLException ignored) {}
+        try {
+            if (conn != null) {
+                conn.setAutoCommit(true);
+            }
+        } catch (SQLException ignored) {}
     }
 }

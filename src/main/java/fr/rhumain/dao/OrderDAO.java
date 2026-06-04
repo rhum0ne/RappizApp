@@ -85,7 +85,11 @@ public class OrderDAO implements DAO<Order, Integer> {
             stm.setInt(2, entity.pizza().id());
             stm.setInt(3, entity.format().id());
             stm.setTimestamp(4, Timestamp.valueOf(entity.timeStamp()));
-            stm.setTimestamp(5, Timestamp.valueOf(entity.timeStampLivraison()));
+            if (entity.timeStampLivraison() != null) {
+                stm.setTimestamp(5, Timestamp.valueOf(entity.timeStampLivraison()));
+            } else {
+                stm.setNull(5, Types.TIMESTAMP);
+            }
             stm.setDouble(6, entity.price());
             if (entity.livreur() != null) {
                 stm.setInt(7, entity.livreur().id());
@@ -121,7 +125,11 @@ public class OrderDAO implements DAO<Order, Integer> {
             stm.setInt(2, entity.pizza().id());
             stm.setInt(3, entity.format().id());
             stm.setTimestamp(4, Timestamp.valueOf(entity.timeStamp()));
-            stm.setTimestamp(5, Timestamp.valueOf(entity.timeStampLivraison()));
+            if (entity.timeStampLivraison() != null) {
+                stm.setTimestamp(5, Timestamp.valueOf(entity.timeStampLivraison()));
+            } else {
+                stm.setNull(5, Types.TIMESTAMP);
+            }
             stm.setDouble(6, entity.price());
             if (entity.livreur() != null) {
                 stm.setInt(7, entity.livreur().id());
@@ -186,13 +194,8 @@ public class OrderDAO implements DAO<Order, Integer> {
         Livreur livreur = null;
         int idDeliver = rs.getInt("id_deliver");
         if (!rs.wasNull()) {
-            Vehicule vehicule = null;
-            int idVehicule = rs.getInt("id_vehicule");
-            if (!rs.wasNull()) {
-                vehicule = new Vehicule(idVehicule, rs.getString("brand"), rs.getString("model"));
-            }
             livreur = new Livreur(idDeliver, rs.getString("d_first_name"), rs.getString("d_last_name"),
-                    rs.getString("d_email"), rs.getString("d_password"), vehicule);
+                    rs.getString("d_email"), rs.getString("d_password"));
         }
 
         Vehicule vehicule = null;
@@ -207,7 +210,7 @@ public class OrderDAO implements DAO<Order, Integer> {
                 pizza,
                 format,
                 rs.getTimestamp("timestamp_order").toLocalDateTime(),
-                rs.getTimestamp("timestamp_deliver").toLocalDateTime(),
+                rs.getTimestamp("timestamp_deliver") != null ? rs.getTimestamp("timestamp_deliver").toLocalDateTime() : null,
                 rs.getInt("final_price"),
                 livreur,
                 vehicule

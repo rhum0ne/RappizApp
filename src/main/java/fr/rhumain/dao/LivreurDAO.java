@@ -2,7 +2,6 @@ package fr.rhumain.dao;
 
 import fr.rhumain.exceptions.DAOException;
 import fr.rhumain.structs.Livreur;
-import fr.rhumain.structs.Vehicule;
 
 import java.sql.*;
 import java.util.ArrayList;

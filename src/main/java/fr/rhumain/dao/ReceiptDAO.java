@@ -80,7 +80,7 @@ public class ReceiptDAO implements DAO<Receipt, Integer> {
             stm.executeUpdate();
             try (ResultSet keys = stm.getGeneratedKeys()) {
                 if (keys.next()) {
-                    return new Receipt(keys.getInt(1), entity.idOrder(), entity.idUser(), entity.price());
+                    return new Receipt(keys.getInt(1), entity.idOrder(), entity.price(), entity.idUser());
                 }
                 throw new DAOException("[ReceiptDAO] No generated key returned when saving receipt");
             }
@@ -156,13 +156,11 @@ public class ReceiptDAO implements DAO<Receipt, Integer> {
                 rs.getString("password"),
                 rs.getInt("balance")
         );
-        // Order chargé en mode léger (id uniquement) — utiliser OrderDAO pour la version complète
-//        Order order = new Order(rs.getInt("id_order"), null, null, 0, null, null, 0, null, null);
         return new Receipt(
                 rs.getInt("id"),
                 rs.getInt("id_order"),
-                user.id(),
-                rs.getInt("final_price")
+                rs.getInt("final_price"),
+                user.id()
         );
     }
 }
