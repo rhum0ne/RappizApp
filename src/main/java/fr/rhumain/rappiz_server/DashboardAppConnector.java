@@ -2,6 +2,7 @@ package fr.rhumain.rappiz_server;
 
 import fr.rhumain.dao.LivreurDAO;
 import fr.rhumain.dao.OrderDAO;
+import fr.rhumain.dao.PizzaDAO;
 import fr.rhumain.dao.ReceiptDAO;
 import fr.rhumain.dao.ReportDAO;
 import fr.rhumain.dao.UserDAO;
@@ -21,18 +22,20 @@ public class DashboardAppConnector {
     private final UserDAO userDAO;
     private final VehiculeDAO vehiculeDAO;
     private final LivreurDAO livreurDAO;
+    private final PizzaDAO pizzaDAO;
     private final ReportDAO reportDAO;
     private final ReceiptDAO receiptDAO;
 
     public DashboardAppConnector() {
-        this(new OrderDAO(), new UserDAO(), new VehiculeDAO(), new LivreurDAO(), new ReportDAO(), new ReceiptDAO());
+        this(new OrderDAO(), new UserDAO(), new VehiculeDAO(), new LivreurDAO(), new PizzaDAO(), new ReportDAO(), new ReceiptDAO());
     }
 
-    public DashboardAppConnector(OrderDAO orderDAO, UserDAO userDAO, VehiculeDAO vehiculeDAO, LivreurDAO livreurDAO, ReportDAO reportDAO, ReceiptDAO receiptDAO) {
+    public DashboardAppConnector(OrderDAO orderDAO, UserDAO userDAO, VehiculeDAO vehiculeDAO, LivreurDAO livreurDAO, PizzaDAO pizzaDAO, ReportDAO reportDAO, ReceiptDAO receiptDAO) {
         this.orderDAO = orderDAO;
         this.userDAO = userDAO;
         this.vehiculeDAO = vehiculeDAO;
         this.livreurDAO = livreurDAO;
+        this.pizzaDAO = pizzaDAO;
         this.reportDAO = reportDAO;
         this.receiptDAO = receiptDAO;
     }
@@ -88,6 +91,19 @@ public class DashboardAppConnector {
     public User getUserById(int idUser) {
         try {
             return userDAO.findById(idUser).orElse(null);
+        } catch (DAOException e) {
+            logDaoError(e);
+            return null;
+        }
+    }
+
+    public Pizza getPizzaById(Integer idPizza) {
+        if (idPizza == null) {
+            return null;
+        }
+
+        try {
+            return pizzaDAO.findById(idPizza).orElse(null);
         } catch (DAOException e) {
             logDaoError(e);
             return null;

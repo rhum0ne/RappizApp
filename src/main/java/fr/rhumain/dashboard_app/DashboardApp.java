@@ -39,6 +39,7 @@ public class DashboardApp extends JFrame {
     private final JLabel averageOrdersValue;
     private final JLabel clientsAboveAverageValue;
     private final JLabel ordersByClientValue;
+    private String ordersByClientDetails = "Aucune donnée";
     private final JComboBox<Livreur> livreurComboBox;
     private final JComboBox<Vehicule> vehiculeComboBox;
 
@@ -67,17 +68,15 @@ public class DashboardApp extends JFrame {
         clientsAboveAverageValue = createMetricValue();
         ordersByClientValue = createMetricValue();
 
-        JPanel metricsPanel = new JPanel(new GridLayout(1, 4, 12, 0));
-        metricsPanel.setBackground(AppTheme.BACKGROUND);
+        JPanel metricsPanel = createCardsGrid(1, 4, 10, 0);
         metricsPanel.add(createMetricCard("Commandes", totalOrdersValue));
         metricsPanel.add(createMetricCard("En préparation", pendingOrdersValue));
         metricsPanel.add(createMetricCard("Livrées", deliveredOrdersValue));
         metricsPanel.add(createMetricCard("Chiffre d'affaires", revenueValue));
 
-        JPanel statisticsPanel = new JPanel(new GridLayout(3, 3, 12, 12));
-        statisticsPanel.setBackground(AppTheme.BACKGROUND);
+        JPanel statisticsPanel = createCardsGrid(3, 3, 10, 8);
         statisticsPanel.add(createMetricCard("Meilleur client", bestCustomerValue));
-        statisticsPanel.add(createMetricCard("Commandes par client", ordersByClientValue));
+        statisticsPanel.add(createExpandableMetricCard("Commandes par client", ordersByClientValue, this::showOrdersByClientDialog));
         statisticsPanel.add(createMetricCard("Livreur le plus en retard", worstDeliveryValue));
         statisticsPanel.add(createMetricCard("Pizza la plus demandée", mostOrderedPizzaValue));
         statisticsPanel.add(createMetricCard("Pizza la moins demandée", leastOrderedPizzaValue));
@@ -86,14 +85,17 @@ public class DashboardApp extends JFrame {
         statisticsPanel.add(createMetricCard("Moyenne commandes/client", averageOrdersValue));
         statisticsPanel.add(createMetricCard("Clients au-dessus moyenne", clientsAboveAverageValue));
 
+        JPanel headerMetricsPanel = new JPanel(new BorderLayout(18, 0));
+        headerMetricsPanel.setBackground(AppTheme.BACKGROUND);
+        headerMetricsPanel.add(headerPanel, BorderLayout.WEST);
+        headerMetricsPanel.add(metricsPanel, BorderLayout.CENTER);
+
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
         topPanel.setBackground(AppTheme.BACKGROUND);
-        topPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
-        topPanel.add(headerPanel);
-        topPanel.add(Box.createRigidArea(new Dimension(0, 14)));
-        topPanel.add(metricsPanel);
-        topPanel.add(Box.createRigidArea(new Dimension(0, 14)));
+        topPanel.setBorder(BorderFactory.createEmptyBorder(12, 16, 8, 16));
+        topPanel.add(headerMetricsPanel);
+        topPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         topPanel.add(statisticsPanel);
         this.add(topPanel, BorderLayout.NORTH);
 
@@ -118,13 +120,13 @@ public class DashboardApp extends JFrame {
 
         // Ajout du tableau dans un ScrollPane pour gérer les longues listes
         JScrollPane scrollPane = new JScrollPane(ordersTable);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         this.add(scrollPane, BorderLayout.CENTER);
 
         // --- PANNEAU DU BAS (Boutons d'action) ---
         JPanel bottomPanel = new JPanel();
         bottomPanel.setBackground(AppTheme.BACKGROUND);
-        bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 12, 0));
 
         livreurComboBox = new JComboBox<>();
         vehiculeComboBox = new JComboBox<>();
@@ -164,6 +166,7 @@ public class DashboardApp extends JFrame {
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
         headerPanel.setBackground(AppTheme.BACKGROUND);
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 12));
 
         JLabel titleLabel = new JLabel("Dashboard Rappiz");
         titleLabel.setFont(AppTheme.TITLE_FONT);
@@ -182,28 +185,50 @@ public class DashboardApp extends JFrame {
         return headerPanel;
     }
 
+    private JPanel createCardsGrid(int rows, int columns, int horizontalGap, int verticalGap) {
+        JPanel panel = new JPanel(new GridLayout(rows, columns, horizontalGap, verticalGap));
+        panel.setBackground(AppTheme.BACKGROUND);
+        return panel;
+    }
+
     private JPanel createMetricCard(String title, JLabel valueLabel) {
         JPanel card = new JPanel();
-        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        AppTheme.styleCard(card);
+        card.setLayout(new BorderLayout(0, 3));
+        card.setBackground(AppTheme.CARD);
+        card.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(AppTheme.BORDER),
+                BorderFactory.createEmptyBorder(8, 10, 8, 10)
+        ));
+        card.setPreferredSize(new Dimension(0, 54));
 
         JLabel titleLabel = new JLabel(title);
         titleLabel.setFont(AppTheme.SMALL_FONT);
         titleLabel.setForeground(AppTheme.MUTED_TEXT);
-        titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        valueLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        valueLabel.setVerticalAlignment(SwingConstants.CENTER);
 
-        card.add(titleLabel);
-        card.add(Box.createRigidArea(new Dimension(0, 6)));
-        card.add(valueLabel);
+        card.add(titleLabel, BorderLayout.NORTH);
+        card.add(valueLabel, BorderLayout.CENTER);
+
+        return card;
+    }
+
+    private JPanel createExpandableMetricCard(String title, JLabel valueLabel, Runnable onMoreClicked) {
+        JPanel card = createMetricCard(title, valueLabel);
+
+        JButton moreButton = new JButton("Voir plus");
+        moreButton.setFont(AppTheme.SMALL_FONT);
+        moreButton.setFocusPainted(false);
+        moreButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        moreButton.addActionListener(e -> onMoreClicked.run());
+        card.add(moreButton, BorderLayout.EAST);
 
         return card;
     }
 
     private JLabel createMetricValue() {
         JLabel label = new JLabel("0");
-        label.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        label.setFont(new Font("Segoe UI", Font.BOLD, 16));
         label.setForeground(AppTheme.PRIMARY);
         return label;
     }
@@ -321,9 +346,14 @@ public class DashboardApp extends JFrame {
                 .max(Map.Entry.comparingByValue())
                 .map(entry -> getClientName(entry.getKey()) + " (" + entry.getValue() + ")")
                 .orElse("Aucun"));
-        ordersByClientValue.setText("<html>" + users.stream()
+
+        ordersByClientDetails = users.stream()
                 .map(user -> user.firstName() + " " + user.lastName() + ": " + ordersByClient.getOrDefault(user.id(), 0L))
-                .collect(Collectors.joining("<br>")) + "</html>");
+                .collect(Collectors.joining("\n"));
+        if (ordersByClientDetails.isBlank()) {
+            ordersByClientDetails = "Aucun client";
+        }
+        ordersByClientValue.setText(users.size() + " client" + (users.size() > 1 ? "s" : ""));
 
         double average = users.isEmpty() ? 0 : (double) orders.size() / users.size();
         averageOrdersValue.setText(String.format("%.1f", average));
@@ -345,6 +375,8 @@ public class DashboardApp extends JFrame {
 
         Map<String, Long> ingredientCounts = orders.stream()
                 .map(Order::pizza)
+                .filter(pizza -> pizza != null)
+                .map(pizza -> server.getPizzaById(pizza.id()))
                 .filter(pizza -> pizza != null)
                 .flatMap(pizza -> Arrays.stream(pizza.ingredients()))
                 .map(Ingredient::nom)
@@ -409,6 +441,23 @@ public class DashboardApp extends JFrame {
         }
 
         loadOrdersIntoTable();
+    }
+
+    private void showOrdersByClientDialog() {
+        JTextArea textArea = new JTextArea(ordersByClientDetails);
+        textArea.setEditable(false);
+        textArea.setFont(AppTheme.BODY_FONT);
+        textArea.setBackground(AppTheme.CARD);
+
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(320, 220));
+
+        JOptionPane.showMessageDialog(
+                this,
+                scrollPane,
+                "Commandes par client",
+                JOptionPane.INFORMATION_MESSAGE
+        );
     }
 
     private DefaultTableCellRenderer createTableRenderer() {

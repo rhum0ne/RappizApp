@@ -27,7 +27,7 @@ public class RappizServer {
     private final IngredientsDAO ingredientsDAO = new IngredientsDAO();
     private final VehiculeDAO vehiculeDAO = new VehiculeDAO();
 
-    private final DashboardAppConnector dashboardAppConnector = new DashboardAppConnector(orderDAO, userDAO, vehiculeDAO, livreurDAO, reportDAO, receiptDAO);
+    private final DashboardAppConnector dashboardAppConnector = new DashboardAppConnector(orderDAO, userDAO, vehiculeDAO, livreurDAO, pizzaDAO, reportDAO, receiptDAO);
     private final ClientAppConnector clientAppConnector = new ClientAppConnector(pizzaDAO, formatDAO, userDAO, orderDAO, receiptDAO);
     private SeederRunner seederRunner;
 

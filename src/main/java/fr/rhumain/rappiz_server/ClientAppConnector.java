@@ -68,8 +68,8 @@ public class ClientAppConnector {
                 return false;
             }
 
-            int paidPizzaCount = getBoughtPizzaCount(user.id());
-            boolean loyaltyFreePizza = paidPizzaCount > 0 && (paidPizzaCount + 1) % 10 == 0;
+            int loyaltyPizzaCount = getBoughtPizzaCount(user.id());
+            boolean loyaltyFreePizza = loyaltyPizzaCount > 0 && (loyaltyPizzaCount + 1) % 10 == 0;
             int price = loyaltyFreePizza ? 0 : calculatePrice(pizza, format);
             if (user.balance() < price) {
                 System.out.println("Commande refusée pour le client #" + idUser + " : solde insuffisant");
@@ -108,8 +108,9 @@ public class ClientAppConnector {
     }
 
     public int getBoughtPizzaCount(int idUser) {
+        // Le cycle fidélité doit avancer même quand la pizza courante est offerte,
+        // sinon le client reste bloqué à 9/10 et obtient des pizzas gratuites à l'infini.
         return (int) getOrdersByUserId(idUser).stream()
-                .filter(order -> order.price() > 0)
                 .count();
     }
 
